@@ -1,0 +1,27 @@
+{
+    "name": "mrmysql/youtube-transcript",
+    "description": "Retrieving transcripts for youtube videos.",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "MrMySQL\\YoutubeTranscript\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "MrMySQL",
+            "email": "mrmysql.90@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2", 
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.1"
+    },
+    "license": "WTFPL",
+    "require-dev": {
+        "vimeo/psalm": "^6.0",
+        "phpunit/phpunit": "^10",
+        "psalm/plugin-phpunit": "^0.19.5"
+    }
+}

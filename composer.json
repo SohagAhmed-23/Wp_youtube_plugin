@@ -1,0 +1,7 @@
+{
+    "require": {
+        "mrmysql/youtube-transcript": "^0.0.5",
+        "guzzlehttp/guzzle": "^7.10",
+        "guzzlehttp/psr7": "^2.9"
+    }
+}
