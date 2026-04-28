@@ -13,8 +13,11 @@ class YTFlix_Frontend {
         wp_add_inline_style('ytflix-frontend', ":root { --ytflix-accent: {$accent}; }");
 
         wp_enqueue_script('ytflix-swiper', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], '11.0', true);
-        wp_enqueue_script('ytflix-yt-api', 'https://www.youtube.com/iframe_api', [], null, true);
         wp_enqueue_script('ytflix-frontend', YTFLIX_PLUGIN_URL . 'assets/js/frontend.js', ['jquery', 'ytflix-swiper'], YTFLIX_VERSION, true);
+
+        if ($this->is_watch_page()) {
+            wp_enqueue_script('ytflix-yt-api', 'https://www.youtube.com/iframe_api', [], null, true);
+        }
 
         wp_localize_script('ytflix-frontend', 'ytflixData', [
             'ajaxUrl'         => admin_url('admin-ajax.php'),
@@ -27,6 +30,7 @@ class YTFlix_Frontend {
             'enableFavorites' => get_option('ytflix_enable_favorites', '1'),
             'enablePip'       => get_option('ytflix_enable_pip', '1'),
             'enableTranscripts' => get_option('ytflix_enable_transcripts', '1'),
+            'cacheVersion'    => (int) get_option('ytflix_cache_version', 0),
         ]);
     }
 
@@ -58,6 +62,11 @@ class YTFlix_Frontend {
         }
 
         return $template;
+    }
+
+    private function is_watch_page() {
+        global $post;
+        return ($post && $post->post_type === 'ytflix_video');
     }
 
     private function is_ytflix_page() {

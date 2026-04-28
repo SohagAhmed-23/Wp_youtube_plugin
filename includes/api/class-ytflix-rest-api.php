@@ -84,6 +84,12 @@ class YTFlix_REST_API {
         return is_user_logged_in();
     }
 
+    private function add_cache_headers($response, $max_age, $private = false) {
+        $directive = $private ? 'private' : 'public';
+        $response->header('Cache-Control', "$directive, max-age=$max_age");
+        return $response;
+    }
+
     public function get_videos($request) {
         $per_page = $request->get_param('per_page');
         $page = $request->get_param('page');
@@ -97,11 +103,12 @@ class YTFlix_REST_API {
 
         $videos = array_map([$this, 'format_video'], $query->posts);
 
-        return new WP_REST_Response([
+        $resp = new WP_REST_Response([
             'videos' => $videos,
             'total'  => $query->found_posts,
             'pages'  => $query->max_num_pages,
         ]);
+        return $this->add_cache_headers($resp, 300);
     }
 
     public function get_video($request) {
@@ -124,7 +131,8 @@ class YTFlix_REST_API {
             $video['progress'] = $p ? ['current_time' => (float)$p->current_time, 'duration' => (float)$p->duration] : null;
         }
 
-        return new WP_REST_Response($video);
+        $resp = new WP_REST_Response($video);
+        return $this->add_cache_headers($resp, 600);
     }
 
     public function get_playlists($request) {
@@ -143,7 +151,8 @@ class YTFlix_REST_API {
             $result[] = $formatted;
         }
 
-        return new WP_REST_Response($result);
+        $resp = new WP_REST_Response($result);
+        return $this->add_cache_headers($resp, 3600);
     }
 
     public function get_playlist($request) {
@@ -155,7 +164,8 @@ class YTFlix_REST_API {
         $formatted = $this->format_playlist($post);
         $formatted['videos'] = $this->get_playlist_videos($post->ID);
 
-        return new WP_REST_Response($formatted);
+        $resp = new WP_REST_Response($formatted);
+        return $this->add_cache_headers($resp, 3600);
     }
 
     public function search($request) {
@@ -168,10 +178,11 @@ class YTFlix_REST_API {
             'post_status'    => 'publish',
         ]);
 
-        return new WP_REST_Response([
+        $resp = new WP_REST_Response([
             'results' => array_map([$this, 'format_video'], $videos),
             'query'   => $query,
         ]);
+        return $this->add_cache_headers($resp, 120);
     }
 
     public function save_progress($request) {
@@ -182,7 +193,7 @@ class YTFlix_REST_API {
         $progress = new YTFlix_User_Progress();
         $progress->save_progress(get_current_user_id(), $video_id, $current_time, $duration);
 
-        return new WP_REST_Response(['success' => true]);
+        return $this->add_cache_headers(new WP_REST_Response(['success' => true]), 0, true);
     }
 
     public function get_progress($request) {
@@ -199,7 +210,7 @@ class YTFlix_REST_API {
             $result[] = $v;
         }
 
-        return new WP_REST_Response($result);
+        return $this->add_cache_headers(new WP_REST_Response($result), 0, true);
     }
 
     public function toggle_favorite($request) {
@@ -247,7 +258,7 @@ class YTFlix_REST_API {
             'post_status'    => 'publish',
         ]);
 
-        return new WP_REST_Response(array_map([$this, 'format_video'], $videos));
+        return $this->add_cache_headers(new WP_REST_Response(array_map([$this, 'format_video'], $videos)), 0, true);
     }
 
     public function get_transcript($request) {
@@ -256,10 +267,11 @@ class YTFlix_REST_API {
         $data = $transcript_svc->get_transcript($request['id'], $lang);
         $languages = $transcript_svc->get_available_languages($request['id']);
 
-        return new WP_REST_Response([
+        $resp = new WP_REST_Response([
             'transcript' => $data,
             'languages'  => $languages,
         ]);
+        return $this->add_cache_headers($resp, 86400);
     }
 
     private function format_video($post) {

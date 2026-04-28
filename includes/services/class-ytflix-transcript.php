@@ -25,8 +25,8 @@ class YTFlix_Transcript {
 
         if ($cached) {
             $fetched = strtotime($cached->fetched_at);
-            $cache_duration = (int) get_option('ytflix_cache_duration', 3600);
-            if ((time() - $fetched) < $cache_duration * 24) {
+            $ttl = (int) get_option('ytflix_transcript_cache_ttl', 604800);
+            if ((time() - $fetched) < $ttl) {
                 return json_decode($cached->content, true);
             }
         }
@@ -103,6 +103,44 @@ class YTFlix_Transcript {
             "SELECT language_code, language_name FROM $table WHERE video_post_id = %d ORDER BY language_name",
             $video_post_id
         ));
+    }
+
+    public function sync_all_transcripts($batch_size = 10) {
+        global $wpdb;
+        $table = $wpdb->prefix . 'ytflix_transcripts';
+        $ttl = (int) get_option('ytflix_transcript_cache_ttl', 604800);
+
+        $all_videos = get_posts([
+            'post_type'      => 'ytflix_video',
+            'posts_per_page' => -1,
+            'post_status'    => 'publish',
+            'fields'         => 'ids',
+        ]);
+
+        $needs_fetch = [];
+        foreach ($all_videos as $vid_id) {
+            $cached = $wpdb->get_row($wpdb->prepare(
+                "SELECT fetched_at FROM $table WHERE video_post_id = %d AND language_code = 'en'",
+                $vid_id
+            ));
+
+            if (!$cached || (time() - strtotime($cached->fetched_at)) >= $ttl) {
+                $needs_fetch[] = $vid_id;
+            }
+
+            if (count($needs_fetch) >= $batch_size) break;
+        }
+
+        $fetched = 0;
+        foreach ($needs_fetch as $vid_id) {
+            $this->get_transcript($vid_id, 'en');
+            $fetched++;
+            if ($fetched < count($needs_fetch)) {
+                sleep(1);
+            }
+        }
+
+        return $fetched;
     }
 
     public function export_transcript($video_post_id, $language = 'en', $format = 'txt') {

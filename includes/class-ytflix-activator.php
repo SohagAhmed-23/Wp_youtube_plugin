@@ -74,6 +74,8 @@ class YTFlix_Activator {
             'ytflix_hero_title'       => 'Welcome to YTFlix',
             'ytflix_hero_description' => 'Your favorite videos, Netflix style.',
             'ytflix_cache_duration'   => 3600,
+            'ytflix_transcript_cache_ttl' => 604800,
+            'ytflix_cache_version'   => 0,
             'ytflix_enable_transcripts' => '1',
             'ytflix_enable_history'   => '1',
             'ytflix_enable_favorites' => '1',

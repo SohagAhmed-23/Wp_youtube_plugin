@@ -27,7 +27,8 @@ class YTFlix_Admin {
             'ytflix_video_slug', 'ytflix_playlist_slug',
             'ytflix_hero_image', 'ytflix_channel_logo',
             'ytflix_hero_title', 'ytflix_hero_description',
-            'ytflix_cache_duration', 'ytflix_enable_transcripts',
+            'ytflix_cache_duration', 'ytflix_transcript_cache_ttl',
+            'ytflix_enable_transcripts',
             'ytflix_enable_history', 'ytflix_enable_favorites',
             'ytflix_enable_autoplay', 'ytflix_enable_pip',
             'ytflix_accent_color', 'ytflix_sync_interval',
@@ -112,6 +113,44 @@ class YTFlix_Admin {
                 </div>
             </div>
 
+                <?php
+                $api = new YTFlix_YouTube_API();
+                $today = gmdate('Y-m-d');
+                $stats = $api->get_api_stats();
+                $today_stats = $stats[$today] ?? ['total_calls' => 0, 'total_quota' => 0, 'endpoints' => []];
+                ?>
+                <div class="ytflix-card">
+                    <h3>API Usage (Today)</h3>
+                    <p><strong>API Calls:</strong> <?php echo esc_html($today_stats['total_calls']); ?></p>
+                    <p><strong>Quota Used:</strong> <?php echo esc_html($today_stats['total_quota']); ?> / 10,000</p>
+                    <?php if (!empty($today_stats['endpoints'])): ?>
+                    <table class="widefat striped" style="margin-top:10px">
+                        <thead><tr><th>Endpoint</th><th>Calls</th><th>Quota</th></tr></thead>
+                        <tbody>
+                        <?php foreach ($today_stats['endpoints'] as $ep => $ep_stats): ?>
+                            <tr>
+                                <td><?php echo esc_html($ep); ?></td>
+                                <td><?php echo esc_html($ep_stats['calls']); ?></td>
+                                <td><?php echo esc_html($ep_stats['quota']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <?php endif; ?>
+                </div>
+
+                <?php
+                $cache_stats = $api->get_cache_stats();
+                ?>
+                <div class="ytflix-card">
+                    <h3>Cache Stats</h3>
+                    <p><strong>Active Transients:</strong> <?php echo esc_html($cache_stats['transients']); ?></p>
+                    <p><strong>Stored ETags:</strong> <?php echo esc_html($cache_stats['etags']); ?></p>
+                    <p><strong>Stale Backups:</strong> <?php echo esc_html($cache_stats['stale']); ?></p>
+                    <p><strong>Cached Transcripts:</strong> <?php echo esc_html($cache_stats['transcripts']); ?></p>
+                </div>
+            </div>
+
             <div class="ytflix-card" style="margin-top:20px">
                 <h3>Quick Links</h3>
                 <p>
@@ -150,8 +189,14 @@ class YTFlix_Admin {
                                 <td><input type="text" id="ytflix_channel_id" name="ytflix_channel_id" value="<?php echo esc_attr(get_option('ytflix_channel_id')); ?>" class="regular-text"></td>
                             </tr>
                             <tr>
-                                <th><label for="ytflix_cache_duration">Cache Duration (seconds)</label></th>
-                                <td><input type="number" id="ytflix_cache_duration" name="ytflix_cache_duration" value="<?php echo esc_attr(get_option('ytflix_cache_duration', 3600)); ?>" min="300" max="86400" class="small-text"></td>
+                                <th><label for="ytflix_cache_duration">API Cache Duration (seconds)</label></th>
+                                <td><input type="number" id="ytflix_cache_duration" name="ytflix_cache_duration" value="<?php echo esc_attr(get_option('ytflix_cache_duration', 3600)); ?>" min="300" max="86400" class="small-text">
+                                <p class="description">Base cache TTL for YouTube API responses. Endpoint-specific multipliers are applied automatically.</p></td>
+                            </tr>
+                            <tr>
+                                <th><label for="ytflix_transcript_cache_ttl">Transcript Cache TTL (seconds)</label></th>
+                                <td><input type="number" id="ytflix_transcript_cache_ttl" name="ytflix_transcript_cache_ttl" value="<?php echo esc_attr(get_option('ytflix_transcript_cache_ttl', 604800)); ?>" min="3600" max="2592000" class="small-text">
+                                <p class="description">How long to cache transcripts. Default: 604800 (7 days).</p></td>
                             </tr>
                             <tr>
                                 <th><label for="ytflix_sync_interval">Sync Interval</label></th>

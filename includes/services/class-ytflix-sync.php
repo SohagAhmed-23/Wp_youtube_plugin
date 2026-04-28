@@ -36,8 +36,17 @@ class YTFlix_Sync {
             $this->purge_all_content();
         }
 
-        $this->sync_channel_info();
-        $this->sync_channel_playlists();
+        try {
+            $this->sync_channel_info();
+            $this->sync_channel_playlists();
+            delete_option('ytflix_last_sync_error');
+        } catch (\Throwable $e) {
+            update_option('ytflix_last_sync_error', [
+                'time'    => current_time('mysql'),
+                'message' => $e->getMessage(),
+            ], false);
+            error_log('YTFlix Sync Error: ' . $e->getMessage());
+        }
 
         update_option('ytflix_last_synced_channel', $current_channel);
         update_option('ytflix_last_sync', current_time('mysql'));
@@ -316,5 +325,7 @@ class YTFlix_Sync {
     public function manual_sync() {
         $this->api->clear_cache();
         $this->run_sync();
+        $version = (int) get_option('ytflix_cache_version', 0);
+        update_option('ytflix_cache_version', $version + 1);
     }
 }

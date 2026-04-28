@@ -48,6 +48,7 @@ class YTFlix_Ajax {
             ];
         }
 
+        header('Cache-Control: public, max-age=120');
         wp_send_json_success(['results' => $results, 'query' => $query]);
     }
 
@@ -102,6 +103,41 @@ class YTFlix_Ajax {
         }
     }
 
+    public function get_playlist_row() {
+        $playlist_id = absint($_GET['playlist_id'] ?? 0);
+        if (!$playlist_id) {
+            wp_send_json_error('Invalid playlist ID');
+        }
+
+        $video_ids = get_post_meta($playlist_id, '_ytflix_video_ids', true);
+        if (empty($video_ids)) {
+            wp_send_json_success(['html' => '']);
+        }
+
+        $videos = get_posts([
+            'post_type'      => 'ytflix_video',
+            'post__in'       => $video_ids,
+            'orderby'        => 'menu_order',
+            'order'          => 'ASC',
+            'posts_per_page' => 50,
+            'post_status'    => 'publish',
+        ]);
+
+        if (empty($videos)) {
+            wp_send_json_success(['html' => '']);
+        }
+
+        $playlist = get_post($playlist_id);
+        $row_index = 0;
+
+        ob_start();
+        include YTFLIX_PLUGIN_DIR . 'templates/partials/playlist-row.php';
+        $html = ob_get_clean();
+
+        header('Cache-Control: public, max-age=300');
+        wp_send_json_success(['html' => $html]);
+    }
+
     public function get_transcript() {
         $video_id = absint($_GET['video_id'] ?? 0);
         $language = sanitize_text_field($_GET['lang'] ?? 'en');
@@ -114,6 +150,7 @@ class YTFlix_Ajax {
         $data = $transcript->get_transcript($video_id, $language);
         $languages = $transcript->get_available_languages($video_id);
 
+        header('Cache-Control: public, max-age=86400');
         wp_send_json_success([
             'transcript' => $data,
             'languages'  => $languages,

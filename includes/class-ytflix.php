@@ -62,6 +62,8 @@ class YTFlix {
         $this->loader->add_action('wp_ajax_ytflix_toggle_favorite', $ajax, 'toggle_favorite');
         $this->loader->add_action('wp_ajax_ytflix_get_transcript', $ajax, 'get_transcript');
         $this->loader->add_action('wp_ajax_nopriv_ytflix_get_transcript', $ajax, 'get_transcript');
+        $this->loader->add_action('wp_ajax_ytflix_get_playlist_row', $ajax, 'get_playlist_row');
+        $this->loader->add_action('wp_ajax_nopriv_ytflix_get_playlist_row', $ajax, 'get_playlist_row');
 
         // Cron
         $sync = new YTFlix_Sync();
@@ -69,6 +71,45 @@ class YTFlix {
         $this->loader->add_filter('cron_schedules', $sync, 'add_cron_interval');
         $this->loader->add_action('init', $sync, 'schedule_sync');
 
+        // Transcript cron
+        $this->loader->add_action('ytflix_transcript_sync_cron', $this, 'run_transcript_sync');
+        $this->loader->add_action('init', $this, 'schedule_transcript_sync');
+
+        // Admin notices
+        if (is_admin()) {
+            $this->loader->add_action('admin_notices', $this, 'show_api_notices');
+        }
+
         $this->loader->run();
+    }
+
+    public function schedule_transcript_sync() {
+        if (!wp_next_scheduled('ytflix_transcript_sync_cron')) {
+            wp_schedule_event(time() + 3600, 'daily', 'ytflix_transcript_sync_cron');
+        }
+    }
+
+    public function run_transcript_sync() {
+        $transcript = new YTFlix_Transcript();
+        $transcript->sync_all_transcripts(10);
+    }
+
+    public function show_api_notices() {
+        $quota_exceeded = get_option('ytflix_quota_exceeded', '');
+        if (!empty($quota_exceeded)) {
+            echo '<div class="notice notice-error"><p><strong>YTFlix:</strong> ' .
+                 esc_html__('YouTube API quota exceeded at ', 'ytflix') .
+                 esc_html($quota_exceeded) .
+                 '. ' . esc_html__('Cached data is being served. Quota resets at midnight Pacific Time.', 'ytflix') .
+                 '</p></div>';
+        }
+
+        $sync_error = get_option('ytflix_last_sync_error', '');
+        if (!empty($sync_error) && is_array($sync_error)) {
+            echo '<div class="notice notice-warning"><p><strong>YTFlix:</strong> ' .
+                 esc_html__('Last sync encountered an error: ', 'ytflix') .
+                 esc_html($sync_error['message'] ?? 'Unknown error') .
+                 ' (' . esc_html($sync_error['time'] ?? '') . ')</p></div>';
+        }
     }
 }
