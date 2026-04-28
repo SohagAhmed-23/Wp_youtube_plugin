@@ -28,7 +28,7 @@ if (empty($continue_watching)) return;
                      data-thumbnail="<?php echo esc_url($v_thumb); ?>">
 
                     <div class="ytflix-card-thumb-wrap">
-                        <img class="ytflix-card-thumb-img" src="<?php echo esc_url($v_thumb); ?>" alt="<?php echo esc_attr($item->post_title); ?>" loading="lazy">
+                        <img class="ytflix-card-thumb-img" src="<?php echo esc_url($v_thumb); ?>" alt="<?php echo esc_attr($item->post_title); ?>" loading="lazy" referrerpolicy="no-referrer">
 
                         <div class="ytflix-card-overlay-info">
                             <div class="ytflix-card-overlay-title"><?php echo esc_html($item->post_title); ?></div>

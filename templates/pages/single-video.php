@@ -171,7 +171,7 @@ $enable_transcripts = get_option('ytflix_enable_transcripts', '1') === '1';
                 <a href="<?php echo esc_url(get_permalink($pv->ID)); ?>"
                    class="ytflix-episode-item <?php echo esc_attr($is_current ? 'active' : ''); ?>">
                     <div class="ytflix-episode-thumb">
-                        <img src="<?php echo esc_url($pv_thumb); ?>" alt="" loading="lazy">
+                        <img src="<?php echo esc_url($pv_thumb); ?>" alt="" loading="lazy" referrerpolicy="no-referrer">
                         <?php if ($is_current): ?>
                             <div class="ytflix-now-playing">
                                 <span></span><span></span><span></span>

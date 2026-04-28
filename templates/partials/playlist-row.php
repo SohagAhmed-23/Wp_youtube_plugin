@@ -37,7 +37,8 @@ $playlist_yt_id = $playlist->ID ? get_post_meta($playlist->ID, '_ytflix_youtube_
                         <img class="ytflix-card-thumb-img"
                              src="<?php echo esc_url($v_thumb); ?>"
                              alt="<?php echo esc_attr($v->post_title); ?>"
-                             loading="lazy">
+                             loading="lazy"
+                             referrerpolicy="no-referrer">
 
                         <div class="ytflix-card-overlay-info">
                             <div class="ytflix-card-overlay-title"><?php echo esc_html($v->post_title); ?></div>

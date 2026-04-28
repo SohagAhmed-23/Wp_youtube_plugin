@@ -31,12 +31,15 @@ if (empty($hero_image)) {
     }
 }
 ?>
-<section class="ytflix-hero" <?php if ($hero_image): ?>style="background-image:url('<?php echo esc_url($hero_image); ?>')"<?php endif; ?>>
+<section class="ytflix-hero">
+    <?php if ($hero_image): ?>
+    <img class="ytflix-hero-bg" src="<?php echo esc_url($hero_image); ?>" alt="" referrerpolicy="no-referrer">
+    <?php endif; ?>
     <div class="ytflix-hero-overlay">
         <div class="ytflix-hero-content">
             <?php if ($channel_logo): ?>
             <div class="ytflix-channel-logo">
-                <img src="<?php echo esc_url($channel_logo); ?>" alt="Channel Logo">
+                <img src="<?php echo esc_url($channel_logo); ?>" alt="Channel Logo" referrerpolicy="no-referrer">
             </div>
             <?php endif; ?>
             <h1 class="ytflix-hero-title"><?php echo esc_html($hero_title); ?></h1>

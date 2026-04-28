@@ -164,7 +164,7 @@
             var html = '';
             results.forEach(function(item) {
                 html += '<a href="' + item.permalink + '" class="ytflix-search-result-item">';
-                html += '<div class="ytflix-search-result-thumb"><img src="' + (item.thumbnail || '') + '" alt="" loading="lazy"></div>';
+                html += '<div class="ytflix-search-result-thumb"><img src="' + (item.thumbnail || '') + '" alt="" loading="lazy" referrerpolicy="no-referrer"></div>';
                 html += '<div class="ytflix-search-result-info">';
                 html += '<h4>' + YTFLIX.escHtml(item.title) + '</h4>';
                 html += '<span>' + (item.type === 'playlist' ? item.count + ' episodes' : item.duration || '') + '</span>';
@@ -324,10 +324,10 @@
                         }
                     });
                 } catch(e) {
-                    previewContainer.innerHTML = '<img src="' + YTFLIX.escHtml(thumbnail) + '" alt="">';
+                    previewContainer.innerHTML = '<img src="' + YTFLIX.escHtml(thumbnail) + '" alt="" referrerpolicy="no-referrer">';
                 }
             } else {
-                previewContainer.innerHTML = '<img src="' + YTFLIX.escHtml(thumbnail) + '" alt="">';
+                previewContainer.innerHTML = '<img src="' + YTFLIX.escHtml(thumbnail) + '" alt="" referrerpolicy="no-referrer">';
             }
 
             backdrop.classList.add('active');

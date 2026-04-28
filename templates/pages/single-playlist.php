@@ -46,7 +46,7 @@ $first_video = !empty($videos) ? $videos[0] : null;
         ?>
         <a href="<?php echo esc_url(get_permalink($v->ID)); ?>" class="ytflix-playlist-video-card">
             <div class="ytflix-card-thumb">
-                <img src="<?php echo esc_url($v_thumb); ?>" alt="<?php echo esc_attr($v->post_title); ?>" loading="lazy">
+                <img src="<?php echo esc_url($v_thumb); ?>" alt="<?php echo esc_attr($v->post_title); ?>" loading="lazy" referrerpolicy="no-referrer">
                 <span class="ytflix-card-duration"><?php echo esc_html($v_dur); ?></span>
                 <span class="ytflix-card-number"><?php echo esc_html($idx + 1); ?></span>
             </div>

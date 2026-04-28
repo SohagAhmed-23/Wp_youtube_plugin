@@ -103,41 +103,16 @@ class YTFlix_Sync {
             ?? $snippet['thumbnails']['default']['url']
             ?? '';
         if (!empty($logo_url)) {
-            $local_logo = $this->sideload_image($logo_url, 'ytflix-channel-logo');
-            if ($local_logo) {
-                update_option('ytflix_channel_logo', $local_logo);
-                update_option('ytflix_channel_logo_url', $local_logo);
-            }
+            update_option('ytflix_channel_logo', esc_url_raw($logo_url));
+            update_option('ytflix_channel_logo_url', esc_url_raw($logo_url));
         }
 
         $banner_url = $branding['image']['bannerExternalUrl'] ?? '';
         if (!empty($banner_url)) {
             $banner_url_hd = $banner_url . '=w2120-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj';
-            $local_banner = $this->sideload_image($banner_url_hd, 'ytflix-channel-banner');
-            if ($local_banner) {
-                update_option('ytflix_hero_image', $local_banner);
-                update_option('ytflix_channel_banner', $local_banner);
-            }
+            update_option('ytflix_hero_image', esc_url_raw($banner_url_hd));
+            update_option('ytflix_channel_banner', esc_url_raw($banner_url_hd));
         }
-    }
-
-    private function sideload_image($url, $filename) {
-        require_once ABSPATH . 'wp-admin/includes/media.php';
-        require_once ABSPATH . 'wp-admin/includes/file.php';
-        require_once ABSPATH . 'wp-admin/includes/image.php';
-
-        $tmp = download_url($url);
-        if (is_wp_error($tmp)) return false;
-
-        $file_array = [
-            'name'     => $filename . '.jpg',
-            'tmp_name' => $tmp,
-        ];
-
-        $attachment_id = media_handle_sideload($file_array, 0);
-        if (is_wp_error($attachment_id)) return false;
-
-        return wp_get_attachment_url($attachment_id);
     }
 
     private function sync_channel_playlists() {
@@ -236,7 +211,6 @@ class YTFlix_Sync {
             update_post_meta($post_id, '_ytflix_item_count', $data['contentDetails']['itemCount'] ?? 0);
             update_post_meta($post_id, '_ytflix_published_at', $snippet['publishedAt'] ?? '');
 
-            $this->maybe_sideload_thumbnail($post_id, $snippet['thumbnails']['high']['url'] ?? '');
         }
 
         return $post_id;
@@ -294,32 +268,9 @@ class YTFlix_Sync {
                 }
             }
 
-            $thumb_url = $snippet['thumbnails']['maxres']['url'] ?? $snippet['thumbnails']['high']['url'] ?? '';
-            $this->maybe_sideload_thumbnail($post_id, $thumb_url);
         }
 
         return $post_id;
-    }
-
-    private function maybe_sideload_thumbnail($post_id, $url) {
-        if (empty($url) || has_post_thumbnail($post_id)) return;
-
-        require_once ABSPATH . 'wp-admin/includes/media.php';
-        require_once ABSPATH . 'wp-admin/includes/file.php';
-        require_once ABSPATH . 'wp-admin/includes/image.php';
-
-        $tmp = download_url($url);
-        if (is_wp_error($tmp)) return;
-
-        $file_array = [
-            'name'     => 'ytflix-' . $post_id . '.jpg',
-            'tmp_name' => $tmp,
-        ];
-
-        $thumb_id = media_handle_sideload($file_array, $post_id);
-        if (!is_wp_error($thumb_id)) {
-            set_post_thumbnail($post_id, $thumb_id);
-        }
     }
 
     public function manual_sync() {

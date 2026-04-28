@@ -56,15 +56,24 @@
     height: 45vh;
     min-height: 320px;
     max-height: 500px;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    overflow: hidden;
     background-color: #2a2016;
+}
+
+.ytflix-hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
 }
 
 .ytflix-hero-overlay {
     position: absolute;
     inset: 0;
+    z-index: 1;
     background: linear-gradient(
         to bottom,
         rgba(26,21,17,0.3) 0%,
@@ -83,6 +92,7 @@
     left: 0;
     right: 0;
     height: 120px;
+    z-index: 1;
     background: linear-gradient(to top, var(--ytflix-bg) 0%, transparent 100%);
     pointer-events: none;
 }
