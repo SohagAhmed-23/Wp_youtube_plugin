@@ -1,6 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
+
 use MrMySQL\YoutubeTranscript\TranscriptListFetcher;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\HttpFactory;
@@ -9,14 +10,16 @@ class YTFlix_Transcript {
 
     private function get_fetcher() {
         $http_client = new Client(['timeout' => 20]);
-        $factory = new HttpFactory();
-        return new TranscriptListFetcher($http_client, $factory, $factory);
+        $request_factory = new HttpFactory();
+        $stream_factory  = new HttpFactory();
+
+        return new TranscriptListFetcher($http_client, $request_factory, $stream_factory);
     }
 
     private function table_exists() {
         global $wpdb;
         $table = $wpdb->prefix . 'ytflix_transcripts';
-        return $wpdb->get_var("SHOW TABLES LIKE '$table'") === $table;
+        return $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table)) === $table;
     }
 
     public function get_transcript($video_post_id, $language = 'en') {
@@ -59,6 +62,8 @@ class YTFlix_Transcript {
         try {
             $fetcher = $this->get_fetcher();
             $transcript_list = $fetcher->fetch($youtube_id);
+          
+
             $transcript = $transcript_list->findTranscript([$language, 'en', 'bn']);
             $entries = $transcript->fetch();
 

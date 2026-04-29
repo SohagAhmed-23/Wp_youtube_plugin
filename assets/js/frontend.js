@@ -17,6 +17,7 @@
         searchTimeout: null,
         transcriptData: [],
         transcriptLoaded: false,
+        transcriptLoading: false,
         modalPlayer: null,
 
         cache: {
@@ -146,7 +147,7 @@
 
             $.ajax({
                 url: ytflixData.ajaxUrl,
-                data: { action: 'ytflix_search', q: q },
+                data: { action: 'ytflix_search', q: q, nonce: ytflixData.nonce },
                 success: function(resp) {
                     if (!resp.success || !resp.data.results.length) {
                         inner.innerHTML = '<div class="ytflix-search-no-results">No results found</div>';
@@ -164,10 +165,8 @@
             var html = '';
             results.forEach(function(item) {
                 html += '<a href="' + item.permalink + '" class="ytflix-search-result-item">';
-                html += '<div class="ytflix-search-result-thumb"><img src="' + (item.thumbnail || '') + '" alt="" loading="lazy" referrerpolicy="no-referrer"></div>';
                 html += '<div class="ytflix-search-result-info">';
                 html += '<h4>' + YTFLIX.escHtml(item.title) + '</h4>';
-                html += '<span>' + (item.type === 'playlist' ? item.count + ' episodes' : item.duration || '') + '</span>';
                 html += '</div></a>';
             });
             inner.innerHTML = html;
@@ -373,7 +372,7 @@
                         targetPanel.classList.add('active');
                     }
 
-                    if (target === 'transcript' && !YTFLIX.transcriptLoaded) {
+                    if (target === 'transcript' && !YTFLIX.transcriptLoaded && !YTFLIX.transcriptLoading) {
                         YTFLIX.loadTranscript('en');
                     }
                 });
@@ -615,7 +614,7 @@
             }
 
             var transcriptPanel = document.getElementById('ytflix-panel-transcript');
-            if (transcriptPanel && transcriptPanel.classList.contains('active')) {
+            if (transcriptPanel) {
                 YTFLIX.loadTranscript('en');
             }
         },
@@ -624,12 +623,16 @@
             var container = document.getElementById('ytflix-player-container');
             var lines = document.getElementById('ytflix-transcript-lines');
             if (!container || !lines) return;
+            if (YTFLIX.transcriptLoaded || YTFLIX.transcriptLoading) return;
+
+            YTFLIX.transcriptLoading = true;
 
             var videoId = container.dataset.videoId;
             var cacheKey = 'transcript_' + videoId + '_' + lang;
             var cached = YTFLIX.cache.get(cacheKey);
 
             if (cached) {
+                YTFLIX.transcriptLoading = false;
                 YTFLIX.renderTranscript(cached, lines);
                 return;
             }
@@ -644,13 +647,27 @@
                     lang: lang,
                 },
                 success: function(resp) {
+                    YTFLIX.transcriptLoading = false;
                     if (!resp.success || !resp.data.transcript || !resp.data.transcript.length) {
-                        lines.innerHTML = '<div class="ytflix-search-no-results">No transcript available.</div>';
+                        lines.innerHTML = '<div class="ytflix-empty-state">' +
+                            '<svg class="ytflix-empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+                            '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>' +
+                            '<polyline points="14 2 14 8 20 8"/>' +
+                            '<line x1="16" y1="13" x2="8" y2="13"/>' +
+                            '<line x1="16" y1="17" x2="8" y2="17"/>' +
+                            '<polyline points="10 9 9 9 8 9"/>' +
+                            '</svg>' +
+                            '<p class="ytflix-empty-state-title">No transcript available</p>' +
+                            '<p class="ytflix-empty-state-desc">A transcript has not been added for this episode yet.</p>' +
+                            '</div>';
                         return;
                     }
 
                     YTFLIX.cache.set(cacheKey, resp.data.transcript, 86400000);
                     YTFLIX.renderTranscript(resp.data.transcript, lines);
+                },
+                error: function() {
+                    YTFLIX.transcriptLoading = false;
                 }
             });
         },

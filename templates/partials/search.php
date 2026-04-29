@@ -9,7 +9,7 @@
             <input type="text"
                    id="ytflix-search-input"
                    class="ytflix-search-input"
-                   placeholder="<?php echo esc_attr__('Search videos...', 'ytflix'); ?>"
+                   placeholder="<?php echo esc_attr__('Search episodes...', 'ytflix'); ?>"
                    autocomplete="off">
             <button class="ytflix-search-clear" id="ytflix-search-clear" style="display:none">&times;</button>
         </div>

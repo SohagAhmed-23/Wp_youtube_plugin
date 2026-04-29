@@ -4,6 +4,7 @@ if (!defined('ABSPATH')) exit;
 class YTFlix_Ajax {
 
     public function search() {
+        check_ajax_referer('ytflix_nonce', 'nonce');
         $query = sanitize_text_field($_GET['q'] ?? '');
         if (empty($query)) {
             wp_send_json_success(['results' => []]);

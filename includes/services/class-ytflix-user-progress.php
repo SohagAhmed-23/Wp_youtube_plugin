@@ -12,7 +12,7 @@ class YTFlix_User_Progress {
 
     private function table_exists() {
         global $wpdb;
-        return $wpdb->get_var("SHOW TABLES LIKE '{$this->table}'") === $this->table;
+        return $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $this->table)) === $this->table;
     }
 
     public function save_progress($user_id, $video_post_id, $current_time, $duration) {

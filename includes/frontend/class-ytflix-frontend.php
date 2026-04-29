@@ -9,7 +9,10 @@ class YTFlix_Frontend {
         wp_enqueue_style('ytflix-swiper', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css', [], '11.0');
         wp_enqueue_style('ytflix-frontend', YTFLIX_PLUGIN_URL . 'assets/css/frontend.css', ['ytflix-swiper'], YTFLIX_VERSION);
 
-        $accent = get_option('ytflix_accent_color', '#c17a2f');
+        $accent = sanitize_hex_color(get_option('ytflix_accent_color', '#c17a2f'));
+        if (empty($accent)) {
+            $accent = '#c17a2f';
+        }
         wp_add_inline_style('ytflix-frontend', ":root { --ytflix-accent: {$accent}; }");
 
         wp_enqueue_script('ytflix-swiper', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], '11.0', true);

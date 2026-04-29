@@ -290,7 +290,7 @@ class YTFlix_YouTube_API {
 
         $transcript_count = 0;
         $table = $wpdb->prefix . 'ytflix_transcripts';
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") === $table) {
+        if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table)) === $table) {
             $transcript_count = (int) $wpdb->get_var("SELECT COUNT(*) FROM $table");
         }
 
