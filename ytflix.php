@@ -37,7 +37,16 @@ register_deactivation_hook(__FILE__, ['YTFlix_Deactivator', 'deactivate']);
 require_once YTFLIX_PLUGIN_DIR . 'includes/class-ytflix.php';
 
 function ytflix_init() {
+    ytflix_maybe_upgrade();
     $plugin = new YTFlix();
     $plugin->run();
 }
+
+function ytflix_maybe_upgrade() {
+    $installed_version = get_option('ytflix_db_version', '0');
+    if (version_compare($installed_version, YTFLIX_DB_VERSION, '<')) {
+        YTFlix_Activator::activate();
+    }
+}
+
 ytflix_init();

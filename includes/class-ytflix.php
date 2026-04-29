@@ -95,6 +95,50 @@ class YTFlix {
     }
 
     public function show_api_notices() {
+        $api_key = get_option('ytflix_api_key', '');
+        $channel_id = get_option('ytflix_channel_id', '');
+
+        if (empty($api_key)) {
+            $settings_url = admin_url('admin.php?page=ytflix-settings');
+            echo '<div class="notice notice-warning"><p><strong>YTFlix:</strong> ' .
+                 sprintf(
+                     esc_html__('YouTube API key is not configured. %sGo to Settings%s to set it up.', 'ytflix'),
+                     '<a href="' . esc_url($settings_url) . '">',
+                     '</a>'
+                 ) .
+                 '</p></div>';
+            return;
+        }
+
+        if (empty($channel_id)) {
+            $settings_url = admin_url('admin.php?page=ytflix-settings');
+            echo '<div class="notice notice-warning"><p><strong>YTFlix:</strong> ' .
+                 sprintf(
+                     esc_html__('YouTube Channel ID is not configured. %sGo to Settings%s to set it up.', 'ytflix'),
+                     '<a href="' . esc_url($settings_url) . '">',
+                     '</a>'
+                 ) .
+                 '</p></div>';
+            return;
+        }
+
+        $last_sync = get_option('ytflix_last_sync', '');
+        if (empty($last_sync)) {
+            $sync_url = admin_url('admin.php?page=ytflix-sync');
+            echo '<div class="notice notice-info"><p><strong>YTFlix:</strong> ' .
+                 sprintf(
+                     esc_html__('Setup complete! %sRun your first sync%s to import videos from YouTube.', 'ytflix'),
+                     '<a href="' . esc_url($sync_url) . '">',
+                     '</a>'
+                 ) .
+                 '</p></div>';
+        }
+
+        if (!get_option('ytflix_rewrite_flushed')) {
+            flush_rewrite_rules();
+            update_option('ytflix_rewrite_flushed', '1');
+        }
+
         $quota_exceeded = get_option('ytflix_quota_exceeded', '');
         if (!empty($quota_exceeded)) {
             echo '<div class="notice notice-error"><p><strong>YTFlix:</strong> ' .

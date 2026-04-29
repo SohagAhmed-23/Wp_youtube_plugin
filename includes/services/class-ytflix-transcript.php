@@ -13,9 +13,21 @@ class YTFlix_Transcript {
         return new TranscriptListFetcher($http_client, $factory, $factory);
     }
 
+    private function table_exists() {
+        global $wpdb;
+        $table = $wpdb->prefix . 'ytflix_transcripts';
+        return $wpdb->get_var("SHOW TABLES LIKE '$table'") === $table;
+    }
+
     public function get_transcript($video_post_id, $language = 'en') {
         global $wpdb;
         $table = $wpdb->prefix . 'ytflix_transcripts';
+
+        if (!$this->table_exists()) {
+            $youtube_id = get_post_meta($video_post_id, '_ytflix_youtube_id', true);
+            if (empty($youtube_id)) return [];
+            return $this->fetch_from_youtube($youtube_id, $language);
+        }
 
         $cached = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM $table WHERE video_post_id = %d AND language_code = %s",

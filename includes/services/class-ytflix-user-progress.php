@@ -10,8 +10,14 @@ class YTFlix_User_Progress {
         $this->table = $wpdb->prefix . 'ytflix_user_progress';
     }
 
+    private function table_exists() {
+        global $wpdb;
+        return $wpdb->get_var("SHOW TABLES LIKE '{$this->table}'") === $this->table;
+    }
+
     public function save_progress($user_id, $video_post_id, $current_time, $duration) {
         global $wpdb;
+        if (!$this->table_exists()) return false;
 
         $youtube_id = get_post_meta($video_post_id, '_ytflix_youtube_id', true);
         $completed = ($duration > 0 && $current_time >= ($duration * 0.9)) ? 1 : 0;
@@ -31,6 +37,7 @@ class YTFlix_User_Progress {
 
     public function get_progress($user_id, $video_post_id) {
         global $wpdb;
+        if (!$this->table_exists()) return null;
 
         return $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM {$this->table} WHERE user_id = %d AND video_post_id = %d",
@@ -41,6 +48,7 @@ class YTFlix_User_Progress {
 
     public function get_continue_watching($user_id, $limit = 20) {
         global $wpdb;
+        if (!$this->table_exists()) return [];
 
         $results = $wpdb->get_results($wpdb->prepare(
             "SELECT p.*, up.current_time as progress_time, up.duration as progress_duration, up.last_watched
@@ -59,6 +67,7 @@ class YTFlix_User_Progress {
 
     public function get_watch_history($user_id, $limit = 50, $offset = 0) {
         global $wpdb;
+        if (!$this->table_exists()) return [];
 
         return $wpdb->get_results($wpdb->prepare(
             "SELECT p.*, up.current_time as progress_time, up.duration as progress_duration, up.completed, up.last_watched

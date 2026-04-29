@@ -93,11 +93,21 @@ class YTFlix_Activator {
     }
 
     private static function register_post_types() {
-        if (!post_type_exists('ytflix_video')) {
-            register_post_type('ytflix_video', ['public' => false]);
-        }
-        if (!post_type_exists('ytflix_playlist')) {
-            register_post_type('ytflix_playlist', ['public' => false]);
-        }
+        $video_slug = get_option('ytflix_video_slug', 'watch');
+        $playlist_slug = get_option('ytflix_playlist_slug', 'series');
+
+        register_post_type('ytflix_video', [
+            'public'  => true,
+            'rewrite' => ['slug' => $video_slug, 'with_front' => false],
+        ]);
+        register_post_type('ytflix_playlist', [
+            'public'  => true,
+            'rewrite' => ['slug' => $playlist_slug, 'with_front' => false],
+        ]);
+        register_taxonomy('ytflix_genre', ['ytflix_video', 'ytflix_playlist'], [
+            'public'       => true,
+            'hierarchical' => true,
+            'rewrite'      => ['slug' => 'genre'],
+        ]);
     }
 }

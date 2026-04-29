@@ -6,6 +6,7 @@ class YTFlix_Deactivator {
     public static function deactivate() {
         wp_clear_scheduled_hook('ytflix_sync_cron');
         wp_clear_scheduled_hook('ytflix_transcript_sync_cron');
+        delete_option('ytflix_rewrite_flushed');
         flush_rewrite_rules();
     }
 }

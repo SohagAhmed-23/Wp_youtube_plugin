@@ -21,6 +21,14 @@ class YTFlix_Admin {
         add_submenu_page('ytflix', __('Playlists', 'ytflix'), __('Playlists', 'ytflix'), 'manage_options', 'edit.php?post_type=ytflix_playlist');
     }
 
+    private $toggle_fields = [
+        'ytflix_enable_transcripts',
+        'ytflix_enable_history',
+        'ytflix_enable_favorites',
+        'ytflix_enable_autoplay',
+        'ytflix_enable_pip',
+    ];
+
     public function register_settings() {
         $fields = [
             'ytflix_api_key', 'ytflix_channel_id',
@@ -35,10 +43,15 @@ class YTFlix_Admin {
         ];
 
         foreach ($fields as $field) {
+            $callback = in_array($field, $this->toggle_fields, true)
+                ? [$this, 'sanitize_toggle']
+                : [$this, 'sanitize_field'];
             register_setting('ytflix_settings', $field, [
-                'sanitize_callback' => [$this, 'sanitize_field'],
+                'sanitize_callback' => $callback,
             ]);
         }
+
+        $this->maybe_flush_rewrite_rules();
 
         // Handle manual sync
         if (isset($_POST['ytflix_manual_sync']) && check_admin_referer('ytflix_sync_action')) {
@@ -61,6 +74,26 @@ class YTFlix_Admin {
 
     public function sanitize_field($value) {
         return sanitize_text_field($value);
+    }
+
+    public function sanitize_toggle($value) {
+        return $value ? '1' : '0';
+    }
+
+    private function maybe_flush_rewrite_rules() {
+        if (!isset($_GET['settings-updated']) || $_GET['settings-updated'] !== 'true') {
+            return;
+        }
+        $old_video_slug = get_option('ytflix_old_video_slug', '');
+        $old_playlist_slug = get_option('ytflix_old_playlist_slug', '');
+        $new_video_slug = get_option('ytflix_video_slug', 'watch');
+        $new_playlist_slug = get_option('ytflix_playlist_slug', 'series');
+
+        if ($old_video_slug !== $new_video_slug || $old_playlist_slug !== $new_playlist_slug) {
+            update_option('ytflix_old_video_slug', $new_video_slug);
+            update_option('ytflix_old_playlist_slug', $new_playlist_slug);
+            flush_rewrite_rules();
+        }
     }
 
     public function enqueue_assets($hook) {
