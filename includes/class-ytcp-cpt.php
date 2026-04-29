@@ -1,19 +1,19 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class YTFlix_CPT {
+class YTCP_CPT {
 
     public function register() {
-        $video_slug = get_option('ytflix_video_slug', 'watch');
-        $playlist_slug = get_option('ytflix_playlist_slug', 'series');
+        $video_slug = get_option('ytcp_video_slug', 'watch');
+        $playlist_slug = get_option('ytcp_playlist_slug', 'series');
 
-        register_post_type('ytflix_video', [
+        register_post_type('ytcp_video', [
             'labels' => [
-                'name'          => __('Videos', 'ytflix'),
-                'singular_name' => __('Video', 'ytflix'),
-                'add_new_item'  => __('Add New Video', 'ytflix'),
-                'edit_item'     => __('Edit Video', 'ytflix'),
-                'search_items'  => __('Search Videos', 'ytflix'),
+                'name'          => __('Videos', 'ytchannel-pro'),
+                'singular_name' => __('Video', 'ytchannel-pro'),
+                'add_new_item'  => __('Add New Video', 'ytchannel-pro'),
+                'edit_item'     => __('Edit Video', 'ytchannel-pro'),
+                'search_items'  => __('Search Videos', 'ytchannel-pro'),
             ],
             'public'              => true,
             'has_archive'         => true,
@@ -25,12 +25,12 @@ class YTFlix_CPT {
             'exclude_from_search' => false,
         ]);
 
-        register_post_type('ytflix_playlist', [
+        register_post_type('ytcp_playlist', [
             'labels' => [
-                'name'          => __('Playlists', 'ytflix'),
-                'singular_name' => __('Playlist', 'ytflix'),
-                'add_new_item'  => __('Add New Playlist', 'ytflix'),
-                'edit_item'     => __('Edit Playlist', 'ytflix'),
+                'name'          => __('Playlists', 'ytchannel-pro'),
+                'singular_name' => __('Playlist', 'ytchannel-pro'),
+                'add_new_item'  => __('Add New Playlist', 'ytchannel-pro'),
+                'edit_item'     => __('Edit Playlist', 'ytchannel-pro'),
             ],
             'public'       => true,
             'has_archive'  => true,
@@ -41,10 +41,10 @@ class YTFlix_CPT {
             'show_in_menu' => false,
         ]);
 
-        register_taxonomy('ytflix_genre', ['ytflix_video', 'ytflix_playlist'], [
+        register_taxonomy('ytcp_genre', ['ytcp_video', 'ytcp_playlist'], [
             'labels' => [
-                'name'          => __('Genres', 'ytflix'),
-                'singular_name' => __('Genre', 'ytflix'),
+                'name'          => __('Genres', 'ytchannel-pro'),
+                'singular_name' => __('Genre', 'ytchannel-pro'),
             ],
             'public'       => true,
             'hierarchical' => true,

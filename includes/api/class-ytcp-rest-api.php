@@ -1,9 +1,9 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class YTFlix_REST_API {
+class YTCP_REST_API {
 
-    private $namespace = 'ytflix/v1';
+    private $namespace = 'ytcp/v1';
 
     public function register_routes() {
         register_rest_route($this->namespace, '/videos', [
@@ -95,7 +95,7 @@ class YTFlix_REST_API {
         $page = $request->get_param('page');
 
         $query = new WP_Query([
-            'post_type'      => 'ytflix_video',
+            'post_type'      => 'ytcp_video',
             'posts_per_page' => $per_page,
             'paged'          => $page,
             'post_status'    => 'publish',
@@ -113,20 +113,20 @@ class YTFlix_REST_API {
 
     public function get_video($request) {
         $post = get_post($request['id']);
-        if (!$post || $post->post_type !== 'ytflix_video') {
+        if (!$post || $post->post_type !== 'ytcp_video') {
             return new WP_Error('not_found', 'Video not found', ['status' => 404]);
         }
 
         $video = $this->format_video($post);
 
-        $playlist_id = get_post_meta($post->ID, '_ytflix_playlist_id', true);
+        $playlist_id = get_post_meta($post->ID, '_ytcp_playlist_id', true);
         if ($playlist_id) {
             $video['playlist'] = $this->format_playlist(get_post($playlist_id));
             $video['playlist_videos'] = $this->get_playlist_videos($playlist_id);
         }
 
         if (is_user_logged_in()) {
-            $progress = new YTFlix_User_Progress();
+            $progress = new YTCP_User_Progress();
             $p = $progress->get_progress(get_current_user_id(), $post->ID);
             $video['progress'] = $p ? ['current_time' => (float)$p->current_time, 'duration' => (float)$p->duration] : null;
         }
@@ -137,7 +137,7 @@ class YTFlix_REST_API {
 
     public function get_playlists($request) {
         $playlists = get_posts([
-            'post_type'      => 'ytflix_playlist',
+            'post_type'      => 'ytcp_playlist',
             'posts_per_page' => 50,
             'post_status'    => 'publish',
             'orderby'        => 'date',
@@ -157,7 +157,7 @@ class YTFlix_REST_API {
 
     public function get_playlist($request) {
         $post = get_post($request['id']);
-        if (!$post || $post->post_type !== 'ytflix_playlist') {
+        if (!$post || $post->post_type !== 'ytcp_playlist') {
             return new WP_Error('not_found', 'Playlist not found', ['status' => 404]);
         }
 
@@ -172,7 +172,7 @@ class YTFlix_REST_API {
         $query = $request->get_param('q');
 
         $videos = get_posts([
-            'post_type'      => 'ytflix_video',
+            'post_type'      => 'ytcp_video',
             'posts_per_page' => 20,
             's'              => $query,
             'post_status'    => 'publish',
@@ -190,14 +190,14 @@ class YTFlix_REST_API {
         $current_time = (float) $request->get_param('current_time');
         $duration = (float) $request->get_param('duration');
 
-        $progress = new YTFlix_User_Progress();
+        $progress = new YTCP_User_Progress();
         $progress->save_progress(get_current_user_id(), $video_id, $current_time, $duration);
 
         return $this->add_cache_headers(new WP_REST_Response(['success' => true]), 0, true);
     }
 
     public function get_progress($request) {
-        $progress = new YTFlix_User_Progress();
+        $progress = new YTCP_User_Progress();
         $continue = $progress->get_continue_watching(get_current_user_id());
         $result = [];
 
@@ -217,7 +217,7 @@ class YTFlix_REST_API {
         global $wpdb;
         $video_id = absint($request->get_param('video_id'));
         $user_id = get_current_user_id();
-        $table = $wpdb->prefix . 'ytflix_favorites';
+        $table = $wpdb->prefix . 'ytcp_favorites';
 
         $exists = $wpdb->get_var($wpdb->prepare(
             "SELECT id FROM $table WHERE user_id = %d AND video_post_id = %d",
@@ -241,7 +241,7 @@ class YTFlix_REST_API {
     public function get_favorites($request) {
         global $wpdb;
         $user_id = get_current_user_id();
-        $table = $wpdb->prefix . 'ytflix_favorites';
+        $table = $wpdb->prefix . 'ytcp_favorites';
 
         $ids = $wpdb->get_col($wpdb->prepare(
             "SELECT video_post_id FROM $table WHERE user_id = %d ORDER BY added_at DESC",
@@ -251,7 +251,7 @@ class YTFlix_REST_API {
         if (empty($ids)) return new WP_REST_Response([]);
 
         $videos = get_posts([
-            'post_type'      => 'ytflix_video',
+            'post_type'      => 'ytcp_video',
             'post__in'       => $ids,
             'orderby'        => 'post__in',
             'posts_per_page' => 50,
@@ -262,7 +262,7 @@ class YTFlix_REST_API {
     }
 
     public function get_transcript($request) {
-        $transcript_svc = new YTFlix_Transcript();
+        $transcript_svc = new YTCP_Transcript();
         $lang = $request->get_param('lang');
         $data = $transcript_svc->get_transcript($request['id'], $lang);
         $languages = $transcript_svc->get_available_languages($request['id']);
@@ -279,13 +279,13 @@ class YTFlix_REST_API {
             'id'          => $post->ID,
             'title'       => $post->post_title,
             'description' => wp_trim_words($post->post_content, 30),
-            'youtube_id'  => get_post_meta($post->ID, '_ytflix_youtube_id', true),
-            'thumbnail'   => get_post_meta($post->ID, '_ytflix_thumbnail', true),
-            'duration'    => (int) get_post_meta($post->ID, '_ytflix_duration', true),
-            'duration_fmt' => get_post_meta($post->ID, '_ytflix_duration_formatted', true),
-            'view_count'  => (int) get_post_meta($post->ID, '_ytflix_view_count', true),
-            'like_count'  => (int) get_post_meta($post->ID, '_ytflix_like_count', true),
-            'position'    => (int) get_post_meta($post->ID, '_ytflix_position', true),
+            'youtube_id'  => get_post_meta($post->ID, '_ytcp_youtube_id', true),
+            'thumbnail'   => get_post_meta($post->ID, '_ytcp_thumbnail', true),
+            'duration'    => (int) get_post_meta($post->ID, '_ytcp_duration', true),
+            'duration_fmt' => get_post_meta($post->ID, '_ytcp_duration_formatted', true),
+            'view_count'  => (int) get_post_meta($post->ID, '_ytcp_view_count', true),
+            'like_count'  => (int) get_post_meta($post->ID, '_ytcp_like_count', true),
+            'position'    => (int) get_post_meta($post->ID, '_ytcp_position', true),
             'permalink'   => get_permalink($post->ID),
             'date'        => $post->post_date,
         ];
@@ -297,19 +297,19 @@ class YTFlix_REST_API {
             'id'          => $post->ID,
             'title'       => $post->post_title,
             'description' => $post->post_content,
-            'youtube_id'  => get_post_meta($post->ID, '_ytflix_youtube_id', true),
-            'thumbnail'   => get_post_meta($post->ID, '_ytflix_thumbnail', true),
-            'video_count' => (int) get_post_meta($post->ID, '_ytflix_video_count', true),
+            'youtube_id'  => get_post_meta($post->ID, '_ytcp_youtube_id', true),
+            'thumbnail'   => get_post_meta($post->ID, '_ytcp_thumbnail', true),
+            'video_count' => (int) get_post_meta($post->ID, '_ytcp_video_count', true),
             'permalink'   => get_permalink($post->ID),
         ];
     }
 
     private function get_playlist_videos($playlist_id) {
-        $video_ids = get_post_meta($playlist_id, '_ytflix_video_ids', true);
+        $video_ids = get_post_meta($playlist_id, '_ytcp_video_ids', true);
         if (empty($video_ids)) return [];
 
         $videos = get_posts([
-            'post_type'      => 'ytflix_video',
+            'post_type'      => 'ytcp_video',
             'post__in'       => $video_ids,
             'orderby'        => 'menu_order',
             'order'          => 'ASC',

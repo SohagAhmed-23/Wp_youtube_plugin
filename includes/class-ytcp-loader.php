@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class YTFlix_Loader {
+class YTCP_Loader {
 
     private $actions = [];
     private $filters = [];

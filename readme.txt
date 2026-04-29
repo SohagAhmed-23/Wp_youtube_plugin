@@ -1,8 +1,8 @@
-=== YTFlix - Netflix-Style YouTube Platform ===
-Contributors: ytflixteam
+=== YTChannel Pro - Netflix-Style YouTube Platform ===
+Contributors: sohagahmed
 Tags: youtube, netflix, video, playlist, streaming, video player, transcripts, youtube api, video gallery
 Requires at least: 5.8
-Tested up to: 6.7
+Tested up to: 6.9
 Stable tag: 1.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -12,7 +12,7 @@ Transform any YouTube channel into a Netflix-style video browsing experience wit
 
 == Description ==
 
-YTFlix turns your WordPress site into a Netflix-inspired video platform powered by the YouTube Data API. Provide your API key and Channel ID, and the plugin automatically imports all playlists and videos, presenting them in a sleek, dark-themed interface with horizontal sliders, a hero section, modal previews, and a full-featured video player.
+YTChannel Pro turns your WordPress site into a Netflix-inspired video platform powered by the YouTube Data API. Provide your API key and Channel ID, and the plugin automatically imports all playlists and videos, presenting them in a sleek, dark-themed interface with horizontal sliders, a hero section, modal previews, and a full-featured video player.
 
 = Key Features =
 
@@ -29,31 +29,31 @@ YTFlix turns your WordPress site into a Netflix-inspired video platform powered 
 * **Keyboard Shortcuts** -- Space (play/pause), arrow keys (seek), F (fullscreen), M (mute).
 * **Speed Control & PiP** -- Playback speed adjustment and Picture-in-Picture support.
 * **Search** -- Real-time AJAX search across videos and playlists.
-* **REST API** -- Full API at `/wp-json/ytflix/v1/` for videos, playlists, search, progress, favorites, and transcripts.
+* **REST API** -- Full API at `/wp-json/ytcp/v1/` for videos, playlists, search, progress, favorites, and transcripts.
 * **Customizable** -- Accent color picker, configurable URL slugs, and feature toggles for transcripts, history, favorites, auto-play, and PiP.
 * **Responsive** -- Fully responsive design for desktop, tablet, and mobile.
-* **Translation Ready** -- i18n support with the `ytflix` text domain.
+* **Translation Ready** -- i18n support with the `ytchannel-pro` text domain.
 * **Channel Switching** -- Changing the Channel ID and syncing purges old data and imports the new channel.
 
 = Custom Post Types =
 
-* `ytflix_video` -- Each synced YouTube video.
-* `ytflix_playlist` -- Each synced YouTube playlist.
-* `ytflix_genre` -- Taxonomy for genre/tag classification.
+* `ytcp_video` -- Each synced YouTube video.
+* `ytcp_playlist` -- Each synced YouTube playlist.
+* `ytcp_genre` -- Taxonomy for genre/tag classification.
 
 = Custom Database Tables =
 
-* `wp_ytflix_user_progress` -- Tracks user playback position per video.
-* `wp_ytflix_transcripts` -- Caches fetched transcripts with language support.
-* `wp_ytflix_favorites` -- Stores user favorites / "My List" entries.
+* `wp_ytcp_user_progress` -- Tracks user playback position per video.
+* `wp_ytcp_transcripts` -- Caches fetched transcripts with language support.
+* `wp_ytcp_favorites` -- Stores user favorites / "My List" entries.
 
 = Shortcodes =
 
-* `[ytflix]` -- Full page layout (hero + search + playlist rows + modal).
-* `[ytflix_hero]` -- Hero section only.
-* `[ytflix_playlist id="POST_ID"]` -- Single playlist horizontal slider.
-* `[ytflix_player video="POST_ID"]` -- Single embedded video player.
-* `[ytflix_search]` -- Search bar component.
+* `[ytcp]` -- Full page layout (hero + search + playlist rows + modal).
+* `[ytcp_hero]` -- Hero section only.
+* `[ytcp_playlist id="POST_ID"]` -- Single playlist horizontal slider.
+* `[ytcp_player video="POST_ID"]` -- Single embedded video player.
+* `[ytcp_search]` -- Search bar component.
 
 = URL Structure =
 
@@ -72,12 +72,12 @@ YTFlix turns your WordPress site into a Netflix-inspired video platform powered 
 
 == Installation ==
 
-1. Upload the `ytflix` folder to the `/wp-content/plugins/` directory, or install the plugin through the WordPress Plugins screen.
+1. Upload the `ytchannel-pro` folder to the `/wp-content/plugins/` directory, or install the plugin through the WordPress Plugins screen.
 2. Activate the plugin through the **Plugins** screen in WordPress.
-3. Navigate to **YTFlix > Settings** in the admin menu.
+3. Navigate to **YTChannel Pro > Settings** in the admin menu.
 4. Enter your **YouTube Data API v3 key** and **Channel ID**.
-5. Go to **YTFlix > Sync** and click **Sync Now** to import playlists and videos.
-6. Visit `/watch/` on your site or add the `[ytflix]` shortcode to any page.
+5. Go to **YTChannel Pro > Sync** and click **Sync Now** to import playlists and videos.
+6. Visit `/watch/` on your site or add the `[ytcp]` shortcode to any page.
 
 = Getting a YouTube API Key =
 
@@ -95,33 +95,33 @@ Your Channel ID is a 24-character string starting with `UC`. Find it on your You
 
 The plugin ships with Composer dependencies pre-installed in the `vendor/` directory. If you need to reinstall them:
 
-`cd wp-content/plugins/ytflix && composer install --no-dev`
+`cd wp-content/plugins/ytchannel-pro && composer install --no-dev`
 
 == Frequently Asked Questions ==
 
 = How often does the content sync with YouTube? =
 
-By default, YTFlix syncs daily via WordPress Cron. You can change the interval to hourly or twice daily under YTFlix > Settings. A manual sync can be triggered at any time from YTFlix > Sync.
+By default, YTChannel Pro syncs daily via WordPress Cron. You can change the interval to hourly or twice daily under YTChannel Pro > Settings. A manual sync can be triggered at any time from YTChannel Pro > Sync.
 
 = What happens when I change the Channel ID? =
 
-When you update the Channel ID and run a sync, YTFlix automatically deletes all existing videos, playlists, and channel branding (logo, banner, name), then imports everything from the new channel.
+When you update the Channel ID and run a sync, YTChannel Pro automatically deletes all existing videos, playlists, and channel branding (logo, banner, name), then imports everything from the new channel.
 
 = Do visitors need to be logged in? =
 
 No. The home page, video playback, search, and transcripts work for all visitors. User login is only required for Continue Watching progress tracking and the My List / Favorites feature.
 
-= Can I use YTFlix on any page? =
+= Can I use YTChannel Pro on any page? =
 
-Yes. Use the `[ytflix]` shortcode on any page or post. Individual shortcodes like `[ytflix_hero]`, `[ytflix_playlist]`, `[ytflix_player]`, and `[ytflix_search]` can also be placed independently.
+Yes. Use the `[ytcp]` shortcode on any page or post. Individual shortcodes like `[ytcp_hero]`, `[ytcp_playlist]`, `[ytcp_player]`, and `[ytcp_search]` can also be placed independently.
 
 = Are transcripts available for every video? =
 
-Transcripts depend on YouTube captions. If a video has auto-generated or manually uploaded captions, YTFlix can fetch and display them. Videos without captions will have no transcript available.
+Transcripts depend on YouTube captions. If a video has auto-generated or manually uploaded captions, YTChannel Pro can fetch and display them. Videos without captions will have no transcript available.
 
 = Can I customize the colors? =
 
-Yes. The accent color can be changed from YTFlix > Settings using a color picker. The default is a copper/brown tone (#c17a2f). The color propagates via a CSS custom property throughout the interface.
+Yes. The accent color can be changed from YTChannel Pro > Settings using a color picker. The default is a copper/brown tone (#c17a2f). The color propagates via a CSS custom property throughout the interface.
 
 = Does it work with caching plugins? =
 
@@ -129,13 +129,13 @@ Yes, but you should exclude the AJAX and REST API endpoints from page caching so
 
 = Can I use this with multiple YouTube channels? =
 
-YTFlix supports one channel at a time. Switching to a different Channel ID and syncing will replace all content from the previous channel.
+YTChannel Pro supports one channel at a time. Switching to a different Channel ID and syncing will replace all content from the previous channel.
 
 = What keyboard shortcuts are supported? =
 
 On the video player page: Space (play/pause), Left/Right arrows (seek backward/forward), F (toggle fullscreen), M (toggle mute).
 
-= Does YTFlix support multiple transcript languages? =
+= Does YTChannel Pro support multiple transcript languages? =
 
 Yes. When fetching transcripts, the plugin looks for the requested language first, then falls back to English. Cached transcripts store the language code and name for easy switching.
 
@@ -169,7 +169,7 @@ Yes. When fetching transcripts, the plugin looks for the requested language firs
 * Keyboard shortcuts (Space, Arrow keys, F, M).
 * Speed control and Picture-in-Picture support.
 * Real-time AJAX search across videos and playlists.
-* Full REST API at /wp-json/ytflix/v1/.
+* Full REST API at /wp-json/ytcp/v1/.
 * AJAX handlers with nonce verification.
 * WP Cron scheduled sync (hourly, twice daily, daily).
 * Customizable accent color, URL slugs, and feature toggles.
@@ -177,12 +177,12 @@ Yes. When fetching transcripts, the plugin looks for the requested language firs
 * Admin dashboard, settings page, and sync management.
 * Channel switching with automatic content purge.
 * Fully responsive design.
-* Translation-ready (ytflix text domain).
-* Custom post types: ytflix_video, ytflix_playlist.
-* Custom taxonomy: ytflix_genre.
+* Translation-ready (ytchannel-pro text domain).
+* Custom post types: ytcp_video, ytcp_playlist.
+* Custom taxonomy: ytcp_genre.
 * Custom database tables: user_progress, transcripts, favorites.
 
 == Upgrade Notice ==
 
 = 1.0.0 =
-Initial release of YTFlix. Install and configure your YouTube API key and Channel ID to get started.
+Initial release of YTChannel Pro. Install and configure your YouTube API key and Channel ID to get started.

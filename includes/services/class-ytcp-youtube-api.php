@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class YTFlix_YouTube_API {
+class YTCP_YouTube_API {
 
     private $api_key;
     private $base_url = 'https://www.googleapis.com/youtube/v3/';
@@ -25,7 +25,7 @@ class YTFlix_YouTube_API {
     ];
 
     public function __construct() {
-        $this->api_key = get_option('ytflix_api_key', '');
+        $this->api_key = get_option('ytcp_api_key', '');
     }
 
     public function is_configured() {
@@ -33,7 +33,7 @@ class YTFlix_YouTube_API {
     }
 
     private function get_cache_duration($endpoint) {
-        $base_duration = (int) get_option('ytflix_cache_duration', 3600);
+        $base_duration = (int) get_option('ytcp_cache_duration', 3600);
         if (isset($this->endpoint_ttls[$endpoint])) {
             return $this->endpoint_ttls[$endpoint];
         }
@@ -42,14 +42,14 @@ class YTFlix_YouTube_API {
 
     private function request($endpoint, $params = []) {
         if (!$this->is_configured()) {
-            return new WP_Error('no_api_key', __('YouTube API key not configured.', 'ytflix'));
+            return new WP_Error('no_api_key', __('YouTube API key not configured.', 'ytchannel-pro'));
         }
 
         $params['key'] = $this->api_key;
         $url = $this->base_url . $endpoint . '?' . http_build_query($params);
-        $cache_key = 'ytflix_' . md5($url);
-        $etag_key = 'ytflix_etag_' . md5($url);
-        $stale_key = 'ytflix_stale_' . md5($url);
+        $cache_key = 'ytcp_' . md5($url);
+        $etag_key = 'ytcp_etag_' . md5($url);
+        $stale_key = 'ytcp_stale_' . md5($url);
         $cache_duration = $this->get_cache_duration($endpoint);
 
         $cached = get_transient($cache_key);
@@ -127,7 +127,7 @@ class YTFlix_YouTube_API {
 
     private function track_api_call($endpoint, $quota_cost) {
         $today = gmdate('Y-m-d');
-        $stats = get_option('ytflix_api_stats', []);
+        $stats = get_option('ytcp_api_stats', []);
 
         if (!isset($stats[$today])) {
             $stats = [$today => ['total_calls' => 0, 'total_quota' => 0, 'endpoints' => []]];
@@ -142,16 +142,16 @@ class YTFlix_YouTube_API {
         $stats[$today]['endpoints'][$endpoint]['calls']++;
         $stats[$today]['endpoints'][$endpoint]['quota'] += $quota_cost;
 
-        update_option('ytflix_api_stats', $stats, false);
+        update_option('ytcp_api_stats', $stats, false);
     }
 
     private function handle_quota_exceeded() {
-        update_option('ytflix_quota_exceeded', current_time('mysql'), false);
+        update_option('ytcp_quota_exceeded', current_time('mysql'), false);
         $this->log_api_warning('quota', 'exceeded', 'YouTube API daily quota exceeded at ' . current_time('mysql'));
     }
 
     private function log_api_warning($endpoint, $type, $message) {
-        $warnings = get_option('ytflix_api_warnings', []);
+        $warnings = get_option('ytcp_api_warnings', []);
         $warnings[] = [
             'time'     => current_time('mysql'),
             'endpoint' => $endpoint,
@@ -159,12 +159,12 @@ class YTFlix_YouTube_API {
             'message'  => $message,
         ];
         $warnings = array_slice($warnings, -50);
-        update_option('ytflix_api_warnings', $warnings, false);
+        update_option('ytcp_api_warnings', $warnings, false);
     }
 
     public function get_channel_info($channel_id = '') {
         if (empty($channel_id)) {
-            $channel_id = get_option('ytflix_channel_id', '');
+            $channel_id = get_option('ytcp_channel_id', '');
         }
 
         return $this->request('channels', [
@@ -175,7 +175,7 @@ class YTFlix_YouTube_API {
 
     public function get_playlists($channel_id = '', $max_results = 25, $page_token = '') {
         if (empty($channel_id)) {
-            $channel_id = get_option('ytflix_channel_id', '');
+            $channel_id = get_option('ytcp_channel_id', '');
         }
 
         $params = [
@@ -232,7 +232,7 @@ class YTFlix_YouTube_API {
 
     public function search_videos($query, $channel_id = '', $max_results = 20) {
         if (empty($channel_id)) {
-            $channel_id = get_option('ytflix_channel_id', '');
+            $channel_id = get_option('ytcp_channel_id', '');
         }
 
         $params = [
@@ -254,42 +254,42 @@ class YTFlix_YouTube_API {
         $wpdb->query(
             $wpdb->prepare(
                 "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s",
-                '_transient_ytflix_%',
-                '_transient_timeout_ytflix_%',
-                'ytflix_etag_%',
-                'ytflix_stale_%'
+                '_transient_ytcp_%',
+                '_transient_timeout_ytcp_%',
+                'ytcp_etag_%',
+                'ytcp_stale_%'
             )
         );
-        delete_option('ytflix_api_stats');
-        delete_option('ytflix_api_warnings');
-        delete_option('ytflix_quota_exceeded');
+        delete_option('ytcp_api_stats');
+        delete_option('ytcp_api_warnings');
+        delete_option('ytcp_quota_exceeded');
     }
 
     public function get_api_stats() {
-        return get_option('ytflix_api_stats', []);
+        return get_option('ytcp_api_stats', []);
     }
 
     public function get_api_warnings() {
-        return get_option('ytflix_api_warnings', []);
+        return get_option('ytcp_api_warnings', []);
     }
 
     public function get_cache_stats() {
         global $wpdb;
 
         $transient_count = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE '_transient_ytflix_%' AND option_name NOT LIKE '_transient_timeout_%'"
+            "SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE '_transient_ytcp_%' AND option_name NOT LIKE '_transient_timeout_%'"
         );
 
         $etag_count = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE 'ytflix_etag_%'"
+            "SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE 'ytcp_etag_%'"
         );
 
         $stale_count = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE 'ytflix_stale_%'"
+            "SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE 'ytcp_stale_%'"
         );
 
         $transcript_count = 0;
-        $table = $wpdb->prefix . 'ytflix_transcripts';
+        $table = $wpdb->prefix . 'ytcp_transcripts';
         if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table)) === $table) {
             $transcript_count = (int) $wpdb->get_var("SELECT COUNT(*) FROM $table");
         }

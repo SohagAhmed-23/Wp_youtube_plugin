@@ -1,5 +1,5 @@
 /**
- * YTFlix Frontend JavaScript
+ * YTCP Frontend JavaScript
  * Handles: Swiper sliders, YouTube player, transcript sync in sidebar tabs,
  * modal popup on card click, progress tracking, search, favorites,
  * auto-play next, skip intro, speed control, PiP
@@ -7,7 +7,7 @@
 (function($) {
     'use strict';
 
-    const YTFLIX = {
+    const YTCP = {
         player: null,
         playerReady: false,
         progressInterval: null,
@@ -21,8 +21,8 @@
         modalPlayer: null,
 
         cache: {
-            _prefix: 'ytflix_',
-            _version: (typeof ytflixData !== 'undefined' ? ytflixData.cacheVersion : 0),
+            _prefix: 'ytcp_',
+            _version: (typeof ytcpData !== 'undefined' ? ytcpData.cacheVersion : 0),
 
             get: function(key) {
                 try {
@@ -76,7 +76,7 @@
         // SWIPER SLIDERS
         // =====================================================================
         initSliders: function() {
-            document.querySelectorAll('.ytflix-slider').forEach(function(el) {
+            document.querySelectorAll('.ytcp-slider').forEach(function(el) {
                 new Swiper('#' + el.id, {
                     slidesPerView: 'auto',
                     spaceBetween: 10,
@@ -99,10 +99,10 @@
         // SEARCH
         // =====================================================================
         initSearch: function() {
-            var input = document.getElementById('ytflix-search-input');
-            var results = document.getElementById('ytflix-search-results');
-            var inner = document.getElementById('ytflix-search-results-inner');
-            var clearBtn = document.getElementById('ytflix-search-clear');
+            var input = document.getElementById('ytcp-search-input');
+            var results = document.getElementById('ytcp-search-results');
+            var inner = document.getElementById('ytcp-search-results-inner');
+            var clearBtn = document.getElementById('ytcp-search-clear');
 
             if (!input) return;
 
@@ -115,9 +115,9 @@
                     return;
                 }
 
-                clearTimeout(YTFLIX.searchTimeout);
-                YTFLIX.searchTimeout = setTimeout(function() {
-                    YTFLIX.doSearch(q, inner, results);
+                clearTimeout(YTCP.searchTimeout);
+                YTCP.searchTimeout = setTimeout(function() {
+                    YTCP.doSearch(q, inner, results);
                 }, 300);
             });
 
@@ -131,7 +131,7 @@
             }
 
             document.addEventListener('click', function(e) {
-                if (results && !e.target.closest('.ytflix-search-container')) {
+                if (results && !e.target.closest('.ytcp-search-container')) {
                     results.style.display = 'none';
                 }
             });
@@ -139,24 +139,24 @@
 
         doSearch: function(q, inner, container) {
             var cacheKey = 'search_' + q.toLowerCase();
-            var cached = YTFLIX.cache.get(cacheKey);
+            var cached = YTCP.cache.get(cacheKey);
             if (cached) {
-                YTFLIX.renderSearchResults(cached, inner, container);
+                YTCP.renderSearchResults(cached, inner, container);
                 return;
             }
 
             $.ajax({
-                url: ytflixData.ajaxUrl,
-                data: { action: 'ytflix_search', q: q, nonce: ytflixData.nonce },
+                url: ytcpData.ajaxUrl,
+                data: { action: 'ytcp_search', q: q, nonce: ytcpData.nonce },
                 success: function(resp) {
                     if (!resp.success || !resp.data.results.length) {
-                        inner.innerHTML = '<div class="ytflix-search-no-results">No results found</div>';
+                        inner.innerHTML = '<div class="ytcp-search-no-results">No results found</div>';
                         container.style.display = 'block';
                         return;
                     }
 
-                    YTFLIX.cache.set(cacheKey, resp.data.results, 120000);
-                    YTFLIX.renderSearchResults(resp.data.results, inner, container);
+                    YTCP.cache.set(cacheKey, resp.data.results, 120000);
+                    YTCP.renderSearchResults(resp.data.results, inner, container);
                 }
             });
         },
@@ -164,9 +164,9 @@
         renderSearchResults: function(results, inner, container) {
             var html = '';
             results.forEach(function(item) {
-                html += '<a href="' + item.permalink + '" class="ytflix-search-result-item">';
-                html += '<div class="ytflix-search-result-info">';
-                html += '<h4>' + YTFLIX.escHtml(item.title) + '</h4>';
+                html += '<a href="' + item.permalink + '" class="ytcp-search-result-item">';
+                html += '<div class="ytcp-search-result-info">';
+                html += '<h4>' + YTCP.escHtml(item.title) + '</h4>';
                 html += '</div></a>';
             });
             inner.innerHTML = html;
@@ -177,29 +177,29 @@
         // CARD INTERACTIONS - Open modal on click (home page), direct nav on watch page
         // =====================================================================
         initCardInteractions: function() {
-            document.querySelectorAll('.ytflix-video-card').forEach(function(card) {
+            document.querySelectorAll('.ytcp-video-card').forEach(function(card) {
                 card.addEventListener('mouseenter', function() {
-                    YTFLIX.previewTimeout = setTimeout(function() {
-                        YTFLIX.startPreview(card);
+                    YTCP.previewTimeout = setTimeout(function() {
+                        YTCP.startPreview(card);
                     }, 800);
                 });
 
                 card.addEventListener('mouseleave', function() {
-                    clearTimeout(YTFLIX.previewTimeout);
-                    YTFLIX.stopPreview(card);
+                    clearTimeout(YTCP.previewTimeout);
+                    YTCP.stopPreview(card);
                 });
 
                 card.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
 
-                    var isWatchPage = document.querySelector('.ytflix-watch-page');
+                    var isWatchPage = document.querySelector('.ytcp-watch-page');
                     if (isWatchPage) {
                         window.location.href = card.dataset.permalink;
                         return;
                     }
 
-                    YTFLIX.openModal(card);
+                    YTCP.openModal(card);
                 });
             });
         },
@@ -211,8 +211,8 @@
                 callback();
                 return;
             }
-            if (!YTFLIX._ytApiLoading) {
-                YTFLIX._ytApiLoading = true;
+            if (!YTCP._ytApiLoading) {
+                YTCP._ytApiLoading = true;
                 var tag = document.createElement('script');
                 tag.src = 'https://www.youtube.com/iframe_api';
                 document.head.appendChild(tag);
@@ -227,11 +227,11 @@
 
         startPreview: function(card) {
             var ytId = card.dataset.youtubeId;
-            var previewEl = card.querySelector('.ytflix-card-preview');
+            var previewEl = card.querySelector('.ytcp-card-preview');
             if (!ytId || !previewEl) return;
 
             if (!window.YT || !window.YT.Player) {
-                YTFLIX.ensureYTApi(function() { YTFLIX.startPreview(card); });
+                YTCP.ensureYTApi(function() { YTCP.startPreview(card); });
                 return;
             }
 
@@ -239,7 +239,7 @@
             previewEl.innerHTML = '<div id="' + containerId + '"></div>';
 
             try {
-                YTFLIX.previewPlayers[ytId] = new YT.Player(containerId, {
+                YTCP.previewPlayers[ytId] = new YT.Player(containerId, {
                     width: '100%',
                     height: '100%',
                     videoId: ytId,
@@ -256,11 +256,11 @@
 
         stopPreview: function(card) {
             var ytId = card.dataset.youtubeId;
-            if (YTFLIX.previewPlayers[ytId]) {
-                try { YTFLIX.previewPlayers[ytId].destroy(); } catch(e) {}
-                delete YTFLIX.previewPlayers[ytId];
+            if (YTCP.previewPlayers[ytId]) {
+                try { YTCP.previewPlayers[ytId].destroy(); } catch(e) {}
+                delete YTCP.previewPlayers[ytId];
             }
-            var previewEl = card.querySelector('.ytflix-card-preview');
+            var previewEl = card.querySelector('.ytcp-card-preview');
             if (previewEl) previewEl.innerHTML = '';
         },
 
@@ -268,31 +268,31 @@
         // MODAL POPUP
         // =====================================================================
         initModal: function() {
-            var backdrop = document.getElementById('ytflix-modal-backdrop');
+            var backdrop = document.getElementById('ytcp-modal-backdrop');
             if (!backdrop) return;
 
-            var closeBtn = document.getElementById('ytflix-modal-close');
+            var closeBtn = document.getElementById('ytcp-modal-close');
             if (closeBtn) {
                 closeBtn.addEventListener('click', function() {
-                    YTFLIX.closeModal();
+                    YTCP.closeModal();
                 });
             }
 
             backdrop.addEventListener('click', function(e) {
                 if (e.target === backdrop) {
-                    YTFLIX.closeModal();
+                    YTCP.closeModal();
                 }
             });
 
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && backdrop.classList.contains('active')) {
-                    YTFLIX.closeModal();
+                    YTCP.closeModal();
                 }
             });
         },
 
         openModal: function(card) {
-            var backdrop = document.getElementById('ytflix-modal-backdrop');
+            var backdrop = document.getElementById('ytcp-modal-backdrop');
             if (!backdrop) return;
 
             var ytId = card.dataset.youtubeId;
@@ -303,17 +303,17 @@
             var playlistDesc = card.dataset.playlistDesc || '';
             var thumbnail = card.dataset.thumbnail || '';
 
-            document.getElementById('ytflix-modal-playlist-title').textContent = playlistTitle;
-            document.getElementById('ytflix-modal-playlist-desc').textContent = playlistDesc;
-            document.getElementById('ytflix-modal-video-title').textContent = title;
-            document.getElementById('ytflix-modal-video-desc').textContent = description;
-            document.getElementById('ytflix-modal-play-btn').href = permalink;
+            document.getElementById('ytcp-modal-playlist-title').textContent = playlistTitle;
+            document.getElementById('ytcp-modal-playlist-desc').textContent = playlistDesc;
+            document.getElementById('ytcp-modal-video-title').textContent = title;
+            document.getElementById('ytcp-modal-video-desc').textContent = description;
+            document.getElementById('ytcp-modal-play-btn').href = permalink;
 
-            var previewContainer = document.getElementById('ytflix-modal-preview');
+            var previewContainer = document.getElementById('ytcp-modal-preview');
             if (ytId && window.YT && window.YT.Player) {
-                previewContainer.innerHTML = '<div id="ytflix-modal-yt-player"></div>';
+                previewContainer.innerHTML = '<div id="ytcp-modal-yt-player"></div>';
                 try {
-                    YTFLIX.modalPlayer = new YT.Player('ytflix-modal-yt-player', {
+                    YTCP.modalPlayer = new YT.Player('ytcp-modal-yt-player', {
                         width: '100%',
                         height: '100%',
                         videoId: ytId,
@@ -323,10 +323,10 @@
                         }
                     });
                 } catch(e) {
-                    previewContainer.innerHTML = '<img src="' + YTFLIX.escHtml(thumbnail) + '" alt="" referrerpolicy="no-referrer">';
+                    previewContainer.innerHTML = '<img src="' + YTCP.escHtml(thumbnail) + '" alt="" referrerpolicy="no-referrer">';
                 }
             } else {
-                previewContainer.innerHTML = '<img src="' + YTFLIX.escHtml(thumbnail) + '" alt="" referrerpolicy="no-referrer">';
+                previewContainer.innerHTML = '<img src="' + YTCP.escHtml(thumbnail) + '" alt="" referrerpolicy="no-referrer">';
             }
 
             backdrop.classList.add('active');
@@ -334,18 +334,18 @@
         },
 
         closeModal: function() {
-            var backdrop = document.getElementById('ytflix-modal-backdrop');
+            var backdrop = document.getElementById('ytcp-modal-backdrop');
             if (!backdrop) return;
 
             backdrop.classList.remove('active');
             document.body.style.overflow = '';
 
-            if (YTFLIX.modalPlayer) {
-                try { YTFLIX.modalPlayer.destroy(); } catch(e) {}
-                YTFLIX.modalPlayer = null;
+            if (YTCP.modalPlayer) {
+                try { YTCP.modalPlayer.destroy(); } catch(e) {}
+                YTCP.modalPlayer = null;
             }
 
-            var previewContainer = document.getElementById('ytflix-modal-preview');
+            var previewContainer = document.getElementById('ytcp-modal-preview');
             if (previewContainer) previewContainer.innerHTML = '';
         },
 
@@ -353,7 +353,7 @@
         // SIDEBAR TABS (Episodes / Transcript)
         // =====================================================================
         initSidebarTabs: function() {
-            var tabs = document.querySelectorAll('.ytflix-sidebar-tab');
+            var tabs = document.querySelectorAll('.ytcp-sidebar-tab');
             if (!tabs.length) return;
 
             tabs.forEach(function(tab) {
@@ -363,17 +363,17 @@
                     tabs.forEach(function(t) { t.classList.remove('active'); });
                     this.classList.add('active');
 
-                    document.querySelectorAll('.ytflix-sidebar-panel').forEach(function(panel) {
+                    document.querySelectorAll('.ytcp-sidebar-panel').forEach(function(panel) {
                         panel.classList.remove('active');
                     });
 
-                    var targetPanel = document.getElementById('ytflix-panel-' + target);
+                    var targetPanel = document.getElementById('ytcp-panel-' + target);
                     if (targetPanel) {
                         targetPanel.classList.add('active');
                     }
 
-                    if (target === 'transcript' && !YTFLIX.transcriptLoaded && !YTFLIX.transcriptLoading) {
-                        YTFLIX.loadTranscript('en');
+                    if (target === 'transcript' && !YTCP.transcriptLoaded && !YTCP.transcriptLoading) {
+                        YTCP.loadTranscript('en');
                     }
                 });
             });
@@ -383,7 +383,7 @@
         // MAIN VIDEO PLAYER (Watch page)
         // =====================================================================
         initPlayer: function() {
-            var container = document.getElementById('ytflix-player-container');
+            var container = document.getElementById('ytcp-player-container');
             if (!container) return;
 
             var ytId = container.dataset.youtubeId;
@@ -391,10 +391,10 @@
             if (!ytId) return;
 
             if (window.YT && window.YT.Player) {
-                YTFLIX.createPlayer(ytId, startTime);
+                YTCP.createPlayer(ytId, startTime);
             } else {
                 window.onYouTubeIframeAPIReady = function() {
-                    YTFLIX.createPlayer(ytId, startTime);
+                    YTCP.createPlayer(ytId, startTime);
                 };
             }
 
@@ -402,7 +402,7 @@
         },
 
         createPlayer: function(ytId, startTime) {
-            YTFLIX.player = new YT.Player('ytflix-player', {
+            YTCP.player = new YT.Player('ytcp-player', {
                 width: '100%',
                 height: '100%',
                 videoId: ytId,
@@ -412,54 +412,54 @@
                     enablejsapi: 1, origin: window.location.origin,
                 },
                 events: {
-                    onReady: YTFLIX.onPlayerReady,
-                    onStateChange: YTFLIX.onPlayerStateChange,
+                    onReady: YTCP.onPlayerReady,
+                    onStateChange: YTCP.onPlayerStateChange,
                 }
             });
         },
 
         onPlayerReady: function() {
-            YTFLIX.playerReady = true;
-            YTFLIX.startProgressTracking();
+            YTCP.playerReady = true;
+            YTCP.startProgressTracking();
 
         },
 
         onPlayerStateChange: function(event) {
             if (event.data === YT.PlayerState.PLAYING) {
-                YTFLIX.updatePlayPauseIcon(true);
-                YTFLIX.startProgressTracking();
+                YTCP.updatePlayPauseIcon(true);
+                YTCP.startProgressTracking();
             } else if (event.data === YT.PlayerState.PAUSED) {
-                YTFLIX.updatePlayPauseIcon(false);
-                YTFLIX.saveCurrentProgress();
+                YTCP.updatePlayPauseIcon(false);
+                YTCP.saveCurrentProgress();
             } else if (event.data === YT.PlayerState.ENDED) {
-                YTFLIX.updatePlayPauseIcon(false);
-                YTFLIX.saveCurrentProgress();
-                YTFLIX.showNextEpisode();
+                YTCP.updatePlayPauseIcon(false);
+                YTCP.saveCurrentProgress();
+                YTCP.showNextEpisode();
             }
         },
 
         initPlayerControls: function() {
-            var playPause = document.getElementById('ytflix-play-pause');
+            var playPause = document.getElementById('ytcp-play-pause');
             if (playPause) {
                 playPause.addEventListener('click', function() {
-                    if (!YTFLIX.player || !YTFLIX.playerReady) return;
-                    var state = YTFLIX.player.getPlayerState();
-                    state === YT.PlayerState.PLAYING ? YTFLIX.player.pauseVideo() : YTFLIX.player.playVideo();
+                    if (!YTCP.player || !YTCP.playerReady) return;
+                    var state = YTCP.player.getPlayerState();
+                    state === YT.PlayerState.PLAYING ? YTCP.player.pauseVideo() : YTCP.player.playVideo();
                 });
             }
 
-            var progressBar = document.getElementById('ytflix-progress-bar');
+            var progressBar = document.getElementById('ytcp-progress-bar');
             if (progressBar) {
                 progressBar.addEventListener('click', function(e) {
-                    if (!YTFLIX.player || !YTFLIX.playerReady) return;
+                    if (!YTCP.player || !YTCP.playerReady) return;
                     var rect = this.getBoundingClientRect();
                     var pct = (e.clientX - rect.left) / rect.width;
-                    YTFLIX.player.seekTo(pct * YTFLIX.player.getDuration(), true);
+                    YTCP.player.seekTo(pct * YTCP.player.getDuration(), true);
                 });
             }
 
-            var speedBtn = document.getElementById('ytflix-speed-btn');
-            var speedMenu = document.getElementById('ytflix-speed-menu');
+            var speedBtn = document.getElementById('ytcp-speed-btn');
+            var speedMenu = document.getElementById('ytcp-speed-menu');
             if (speedBtn && speedMenu) {
                 speedBtn.addEventListener('click', function() {
                     speedMenu.style.display = speedMenu.style.display === 'none' ? 'block' : 'none';
@@ -467,7 +467,7 @@
                 speedMenu.querySelectorAll('button').forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         var speed = parseFloat(this.dataset.speed);
-                        if (YTFLIX.player && YTFLIX.playerReady) YTFLIX.player.setPlaybackRate(speed);
+                        if (YTCP.player && YTCP.playerReady) YTCP.player.setPlaybackRate(speed);
                         speedMenu.querySelectorAll('button').forEach(function(b) { b.classList.remove('active'); });
                         this.classList.add('active');
                         speedBtn.textContent = speed + 'x';
@@ -476,58 +476,58 @@
                 });
             }
 
-            var fsBtn = document.getElementById('ytflix-fullscreen-btn');
+            var fsBtn = document.getElementById('ytcp-fullscreen-btn');
             if (fsBtn) {
                 fsBtn.addEventListener('click', function() {
-                    var c = document.getElementById('ytflix-player-container');
+                    var c = document.getElementById('ytcp-player-container');
                     if (!c) return;
                     document.fullscreenElement ? document.exitFullscreen() : c.requestFullscreen().catch(function(){});
                 });
             }
 
-            var cancelNext = document.getElementById('ytflix-cancel-next');
+            var cancelNext = document.getElementById('ytcp-cancel-next');
             if (cancelNext) {
                 cancelNext.addEventListener('click', function() {
-                    clearInterval(YTFLIX.countdownInterval);
-                    document.getElementById('ytflix-next-overlay').style.display = 'none';
+                    clearInterval(YTCP.countdownInterval);
+                    document.getElementById('ytcp-next-overlay').style.display = 'none';
                 });
             }
 
             document.addEventListener('keydown', function(e) {
                 if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-                if (!YTFLIX.player || !YTFLIX.playerReady) return;
-                if (document.getElementById('ytflix-modal-backdrop') &&
-                    document.getElementById('ytflix-modal-backdrop').classList.contains('active')) return;
+                if (!YTCP.player || !YTCP.playerReady) return;
+                if (document.getElementById('ytcp-modal-backdrop') &&
+                    document.getElementById('ytcp-modal-backdrop').classList.contains('active')) return;
 
                 switch(e.key) {
                     case ' ': case 'k':
                         e.preventDefault();
-                        var st = YTFLIX.player.getPlayerState();
-                        st === YT.PlayerState.PLAYING ? YTFLIX.player.pauseVideo() : YTFLIX.player.playVideo();
+                        var st = YTCP.player.getPlayerState();
+                        st === YT.PlayerState.PLAYING ? YTCP.player.pauseVideo() : YTCP.player.playVideo();
                         break;
                     case 'ArrowLeft':
                         e.preventDefault();
-                        YTFLIX.player.seekTo(YTFLIX.player.getCurrentTime() - 10, true);
+                        YTCP.player.seekTo(YTCP.player.getCurrentTime() - 10, true);
                         break;
                     case 'ArrowRight':
                         e.preventDefault();
-                        YTFLIX.player.seekTo(YTFLIX.player.getCurrentTime() + 10, true);
+                        YTCP.player.seekTo(YTCP.player.getCurrentTime() + 10, true);
                         break;
                     case 'f':
                         e.preventDefault();
-                        var cont = document.getElementById('ytflix-player-container');
+                        var cont = document.getElementById('ytcp-player-container');
                         document.fullscreenElement ? document.exitFullscreen() : cont.requestFullscreen().catch(function(){});
                         break;
                     case 'm':
                         e.preventDefault();
-                        YTFLIX.player.isMuted() ? YTFLIX.player.unMute() : YTFLIX.player.mute();
+                        YTCP.player.isMuted() ? YTCP.player.unMute() : YTCP.player.mute();
                         break;
                 }
             });
         },
 
         updatePlayPauseIcon: function(isPlaying) {
-            var btn = document.getElementById('ytflix-play-pause');
+            var btn = document.getElementById('ytcp-play-pause');
             if (!btn) return;
             var playIcon = btn.querySelector('.play-icon');
             var pauseIcon = btn.querySelector('.pause-icon');
@@ -539,64 +539,64 @@
         // PROGRESS TRACKING
         // =====================================================================
         startProgressTracking: function() {
-            if (YTFLIX.progressInterval) clearInterval(YTFLIX.progressInterval);
+            if (YTCP.progressInterval) clearInterval(YTCP.progressInterval);
 
-            YTFLIX.progressInterval = setInterval(function() {
-                if (!YTFLIX.player || !YTFLIX.playerReady) return;
-                if (YTFLIX.player.getPlayerState() !== YT.PlayerState.PLAYING) return;
+            YTCP.progressInterval = setInterval(function() {
+                if (!YTCP.player || !YTCP.playerReady) return;
+                if (YTCP.player.getPlayerState() !== YT.PlayerState.PLAYING) return;
 
-                var current = YTFLIX.player.getCurrentTime();
-                var duration = YTFLIX.player.getDuration();
+                var current = YTCP.player.getCurrentTime();
+                var duration = YTCP.player.getDuration();
                 var pct = (current / duration) * 100;
 
-                var fill = document.getElementById('ytflix-progress-fill');
+                var fill = document.getElementById('ytcp-progress-fill');
                 if (fill) fill.style.width = pct + '%';
 
-                var timeDisplay = document.getElementById('ytflix-time-display');
+                var timeDisplay = document.getElementById('ytcp-time-display');
                 if (timeDisplay) {
-                    timeDisplay.textContent = YTFLIX.formatTime(current) + ' / ' + YTFLIX.formatTime(duration);
+                    timeDisplay.textContent = YTCP.formatTime(current) + ' / ' + YTCP.formatTime(duration);
                 }
 
-                YTFLIX.highlightTranscriptLine(current);
+                YTCP.highlightTranscriptLine(current);
             }, 250);
 
-            if (ytflixData.isLoggedIn && ytflixData.enableHistory === '1') {
-                setInterval(function() { YTFLIX.saveCurrentProgress(); }, 15000);
+            if (ytcpData.isLoggedIn && ytcpData.enableHistory === '1') {
+                setInterval(function() { YTCP.saveCurrentProgress(); }, 15000);
             }
         },
 
         saveCurrentProgress: function() {
-            if (!ytflixData.isLoggedIn || ytflixData.enableHistory !== '1') return;
-            if (!YTFLIX.player || !YTFLIX.playerReady) return;
+            if (!ytcpData.isLoggedIn || ytcpData.enableHistory !== '1') return;
+            if (!YTCP.player || !YTCP.playerReady) return;
 
-            var container = document.getElementById('ytflix-player-container');
+            var container = document.getElementById('ytcp-player-container');
             if (!container) return;
 
-            $.post(ytflixData.ajaxUrl, {
-                action: 'ytflix_save_progress',
-                nonce: ytflixData.nonce,
+            $.post(ytcpData.ajaxUrl, {
+                action: 'ytcp_save_progress',
+                nonce: ytcpData.nonce,
                 video_id: container.dataset.videoId,
-                current_time: YTFLIX.player.getCurrentTime(),
-                duration: YTFLIX.player.getDuration(),
+                current_time: YTCP.player.getCurrentTime(),
+                duration: YTCP.player.getDuration(),
             });
         },
 
         showNextEpisode: function() {
-            if (ytflixData.enableAutoplay !== '1') return;
-            var overlay = document.getElementById('ytflix-next-overlay');
-            var countdownEl = document.getElementById('ytflix-countdown');
-            var playNextBtn = document.getElementById('ytflix-play-next');
+            if (ytcpData.enableAutoplay !== '1') return;
+            var overlay = document.getElementById('ytcp-next-overlay');
+            var countdownEl = document.getElementById('ytcp-countdown');
+            var playNextBtn = document.getElementById('ytcp-play-next');
             if (!overlay || !playNextBtn || !playNextBtn.href) return;
 
             overlay.style.display = 'flex';
             var count = 10;
             if (countdownEl) countdownEl.textContent = count;
 
-            YTFLIX.countdownInterval = setInterval(function() {
+            YTCP.countdownInterval = setInterval(function() {
                 count--;
                 if (countdownEl) countdownEl.textContent = count;
                 if (count <= 0) {
-                    clearInterval(YTFLIX.countdownInterval);
+                    clearInterval(YTCP.countdownInterval);
                     window.location.href = playNextBtn.href;
                 }
             }, 1000);
@@ -606,104 +606,104 @@
         // TRANSCRIPT (in sidebar panel)
         // =====================================================================
         initTranscript: function() {
-            var downloadBtn = document.getElementById('ytflix-transcript-download');
+            var downloadBtn = document.getElementById('ytcp-transcript-download');
             if (downloadBtn) {
                 downloadBtn.addEventListener('click', function() {
-                    YTFLIX.downloadTranscript();
+                    YTCP.downloadTranscript();
                 });
             }
 
-            var transcriptPanel = document.getElementById('ytflix-panel-transcript');
+            var transcriptPanel = document.getElementById('ytcp-panel-transcript');
             if (transcriptPanel) {
-                YTFLIX.loadTranscript('en');
+                YTCP.loadTranscript('en');
             }
         },
 
         loadTranscript: function(lang) {
-            var container = document.getElementById('ytflix-player-container');
-            var lines = document.getElementById('ytflix-transcript-lines');
+            var container = document.getElementById('ytcp-player-container');
+            var lines = document.getElementById('ytcp-transcript-lines');
             if (!container || !lines) return;
-            if (YTFLIX.transcriptLoaded || YTFLIX.transcriptLoading) return;
+            if (YTCP.transcriptLoaded || YTCP.transcriptLoading) return;
 
-            YTFLIX.transcriptLoading = true;
+            YTCP.transcriptLoading = true;
 
             var videoId = container.dataset.videoId;
             var cacheKey = 'transcript_' + videoId + '_' + lang;
-            var cached = YTFLIX.cache.get(cacheKey);
+            var cached = YTCP.cache.get(cacheKey);
 
             if (cached) {
-                YTFLIX.transcriptLoading = false;
-                YTFLIX.renderTranscript(cached, lines);
+                YTCP.transcriptLoading = false;
+                YTCP.renderTranscript(cached, lines);
                 return;
             }
 
-            lines.innerHTML = '<div class="ytflix-skeleton-loader"><div class="ytflix-skeleton-line"></div><div class="ytflix-skeleton-line"></div><div class="ytflix-skeleton-line"></div></div>';
+            lines.innerHTML = '<div class="ytcp-skeleton-loader"><div class="ytcp-skeleton-line"></div><div class="ytcp-skeleton-line"></div><div class="ytcp-skeleton-line"></div></div>';
 
             $.ajax({
-                url: ytflixData.ajaxUrl,
+                url: ytcpData.ajaxUrl,
                 data: {
-                    action: 'ytflix_get_transcript',
+                    action: 'ytcp_get_transcript',
                     video_id: videoId,
                     lang: lang,
                 },
                 success: function(resp) {
-                    YTFLIX.transcriptLoading = false;
+                    YTCP.transcriptLoading = false;
                     if (!resp.success || !resp.data.transcript || !resp.data.transcript.length) {
-                        lines.innerHTML = '<div class="ytflix-empty-state">' +
-                            '<svg class="ytflix-empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+                        lines.innerHTML = '<div class="ytcp-empty-state">' +
+                            '<svg class="ytcp-empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
                             '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>' +
                             '<polyline points="14 2 14 8 20 8"/>' +
                             '<line x1="16" y1="13" x2="8" y2="13"/>' +
                             '<line x1="16" y1="17" x2="8" y2="17"/>' +
                             '<polyline points="10 9 9 9 8 9"/>' +
                             '</svg>' +
-                            '<p class="ytflix-empty-state-title">No transcript available</p>' +
-                            '<p class="ytflix-empty-state-desc">A transcript has not been added for this episode yet.</p>' +
+                            '<p class="ytcp-empty-state-title">No transcript available</p>' +
+                            '<p class="ytcp-empty-state-desc">A transcript has not been added for this episode yet.</p>' +
                             '</div>';
                         return;
                     }
 
-                    YTFLIX.cache.set(cacheKey, resp.data.transcript, 86400000);
-                    YTFLIX.renderTranscript(resp.data.transcript, lines);
+                    YTCP.cache.set(cacheKey, resp.data.transcript, 86400000);
+                    YTCP.renderTranscript(resp.data.transcript, lines);
                 },
                 error: function() {
-                    YTFLIX.transcriptLoading = false;
+                    YTCP.transcriptLoading = false;
                 }
             });
         },
 
         renderTranscript: function(transcript, lines) {
-            YTFLIX.transcriptData = transcript;
-            YTFLIX.transcriptLoaded = true;
+            YTCP.transcriptData = transcript;
+            YTCP.transcriptLoaded = true;
 
             var html = '';
             transcript.forEach(function(entry, i) {
-                html += '<div class="ytflix-transcript-line" data-index="' + i + '" data-start="' + entry.start + '">';
-                html += '<span class="ytflix-transcript-text">' + YTFLIX.escHtml(entry.text) + '</span>';
-                html += '<span class="ytflix-transcript-time">' + YTFLIX.formatTime(entry.start) + '</span>';
+                html += '<div class="ytcp-transcript-line" data-index="' + i + '" data-start="' + entry.start + '">';
+                html += '<span class="ytcp-transcript-text">' + YTCP.escHtml(entry.text) + '</span>';
+                html += '<span class="ytcp-transcript-time">' + YTCP.formatTime(entry.start) + '</span>';
                 html += '</div>';
             });
             lines.innerHTML = html;
 
-            lines.querySelectorAll('.ytflix-transcript-line').forEach(function(line) {
+            lines.querySelectorAll('.ytcp-transcript-line').forEach(function(line) {
                 line.addEventListener('click', function() {
                     var start = parseFloat(this.dataset.start);
-                    if (YTFLIX.player && YTFLIX.playerReady) {
-                        YTFLIX.player.seekTo(start, true);
-                        YTFLIX.player.playVideo();
+                    if (YTCP.player && YTCP.playerReady) {
+                        YTCP.player.seekTo(start, true);
+                        YTCP.player.playVideo();
                     }
                 });
             });
         },
 
         highlightTranscriptLine: function(currentTime) {
-            if (!YTFLIX.transcriptData.length) return;
+            if (!YTCP.transcriptData.length) return;
 
-            var lines = document.querySelectorAll('.ytflix-transcript-line');
+            var lines = document.querySelectorAll('.ytcp-transcript-line');
             var activeIndex = -1;
 
-            for (var i = 0; i < YTFLIX.transcriptData.length; i++) {
-                var entry = YTFLIX.transcriptData[i];
+            for (var i = 0; i < YTCP.transcriptData.length; i++) {
+                var entry = YTCP.transcriptData[i];
                 if (currentTime >= entry.start && currentTime < entry.end) {
                     activeIndex = i;
                     break;
@@ -715,7 +715,7 @@
             });
 
             if (activeIndex >= 0 && lines[activeIndex]) {
-                var panel = document.getElementById('ytflix-panel-transcript');
+                var panel = document.getElementById('ytcp-panel-transcript');
                 if (panel && panel.classList.contains('active')) {
                     var lineTop = lines[activeIndex].offsetTop - panel.offsetTop;
                     var panelScroll = panel.scrollTop;
@@ -729,28 +729,28 @@
         },
 
         downloadTranscript: function() {
-            if (!YTFLIX.transcriptData.length) {
-                YTFLIX.loadTranscriptThenDownload();
+            if (!YTCP.transcriptData.length) {
+                YTCP.loadTranscriptThenDownload();
                 return;
             }
-            YTFLIX.doDownload();
+            YTCP.doDownload();
         },
 
         loadTranscriptThenDownload: function() {
-            var container = document.getElementById('ytflix-player-container');
+            var container = document.getElementById('ytcp-player-container');
             if (!container) return;
 
             $.ajax({
-                url: ytflixData.ajaxUrl,
+                url: ytcpData.ajaxUrl,
                 data: {
-                    action: 'ytflix_get_transcript',
+                    action: 'ytcp_get_transcript',
                     video_id: container.dataset.videoId,
                     lang: 'en',
                 },
                 success: function(resp) {
                     if (resp.success && resp.data.transcript && resp.data.transcript.length) {
-                        YTFLIX.transcriptData = resp.data.transcript;
-                        YTFLIX.doDownload();
+                        YTCP.transcriptData = resp.data.transcript;
+                        YTCP.doDownload();
                     }
                 }
             });
@@ -758,8 +758,8 @@
 
         doDownload: function() {
             var text = '';
-            YTFLIX.transcriptData.forEach(function(entry) {
-                text += '[' + YTFLIX.formatTime(entry.start) + '] ' + entry.text + '\n';
+            YTCP.transcriptData.forEach(function(entry) {
+                text += '[' + YTCP.formatTime(entry.start) + '] ' + entry.text + '\n';
             });
 
             var blob = new Blob([text], { type: 'text/plain' });
@@ -774,13 +774,13 @@
         // FAVORITES
         // =====================================================================
         initFavorites: function() {
-            var favBtn = document.getElementById('ytflix-fav-btn');
+            var favBtn = document.getElementById('ytcp-fav-btn');
             if (!favBtn) return;
 
             favBtn.addEventListener('click', function() {
-                $.post(ytflixData.ajaxUrl, {
-                    action: 'ytflix_toggle_favorite',
-                    nonce: ytflixData.nonce,
+                $.post(ytcpData.ajaxUrl, {
+                    action: 'ytcp_toggle_favorite',
+                    nonce: ytcpData.nonce,
                     video_id: this.dataset.videoId,
                 }, function(resp) {
                     if (!resp.success) return;
@@ -818,9 +818,9 @@
         // LAZY LOAD PLAYLIST ROWS
         // =====================================================================
         initLazyRows: function() {
-            var lazyRows = document.querySelectorAll('.ytflix-lazy-row');
+            var lazyRows = document.querySelectorAll('.ytcp-lazy-row');
             if (!lazyRows.length || !('IntersectionObserver' in window)) {
-                lazyRows.forEach(function(row) { YTFLIX.loadLazyRow(row); });
+                lazyRows.forEach(function(row) { YTCP.loadLazyRow(row); });
                 return;
             }
 
@@ -828,7 +828,7 @@
                 entries.forEach(function(entry) {
                     if (entry.isIntersecting) {
                         observer.unobserve(entry.target);
-                        YTFLIX.loadLazyRow(entry.target);
+                        YTCP.loadLazyRow(entry.target);
                     }
                 });
             }, { rootMargin: '200px' });
@@ -841,15 +841,15 @@
             if (!playlistId) return;
 
             $.ajax({
-                url: ytflixData.ajaxUrl,
-                data: { action: 'ytflix_get_playlist_row', playlist_id: playlistId },
+                url: ytcpData.ajaxUrl,
+                data: { action: 'ytcp_get_playlist_row', playlist_id: playlistId },
                 success: function(resp) {
                     if (resp.success && resp.data.html) {
                         var temp = document.createElement('div');
                         temp.innerHTML = resp.data.html;
                         rowEl.parentNode.replaceChild(temp.firstElementChild || temp, rowEl);
-                        YTFLIX.initSliders();
-                        YTFLIX.initCardInteractions();
+                        YTCP.initSliders();
+                        YTCP.initCardInteractions();
                     } else {
                         rowEl.remove();
                     }
@@ -860,14 +860,14 @@
     };
 
     $(document).ready(function() {
-        YTFLIX.init();
+        YTCP.init();
     });
 
     if (window.YT && window.YT.Player) {
         $(document).ready(function() {
-            var container = document.getElementById('ytflix-player-container');
-            if (container && !YTFLIX.player) {
-                YTFLIX.createPlayer(
+            var container = document.getElementById('ytcp-player-container');
+            if (container && !YTCP.player) {
+                YTCP.createPlayer(
                     container.dataset.youtubeId,
                     parseFloat(container.dataset.startTime) || 0
                 );

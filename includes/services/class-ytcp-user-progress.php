@@ -1,13 +1,13 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class YTFlix_User_Progress {
+class YTCP_User_Progress {
 
     private $table;
 
     public function __construct() {
         global $wpdb;
-        $this->table = $wpdb->prefix . 'ytflix_user_progress';
+        $this->table = $wpdb->prefix . 'ytcp_user_progress';
     }
 
     private function table_exists() {
@@ -19,7 +19,7 @@ class YTFlix_User_Progress {
         global $wpdb;
         if (!$this->table_exists()) return false;
 
-        $youtube_id = get_post_meta($video_post_id, '_ytflix_youtube_id', true);
+        $youtube_id = get_post_meta($video_post_id, '_ytcp_youtube_id', true);
         $completed = ($duration > 0 && $current_time >= ($duration * 0.9)) ? 1 : 0;
 
         $wpdb->replace($this->table, [

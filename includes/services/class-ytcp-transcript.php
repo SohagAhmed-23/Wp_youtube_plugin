@@ -6,7 +6,7 @@ use MrMySQL\YoutubeTranscript\TranscriptListFetcher;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\HttpFactory;
 
-class YTFlix_Transcript {
+class YTCP_Transcript {
 
     private function get_fetcher() {
         $http_client = new Client(['timeout' => 20]);
@@ -18,16 +18,16 @@ class YTFlix_Transcript {
 
     private function table_exists() {
         global $wpdb;
-        $table = $wpdb->prefix . 'ytflix_transcripts';
+        $table = $wpdb->prefix . 'ytcp_transcripts';
         return $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table)) === $table;
     }
 
     public function get_transcript($video_post_id, $language = 'en') {
         global $wpdb;
-        $table = $wpdb->prefix . 'ytflix_transcripts';
+        $table = $wpdb->prefix . 'ytcp_transcripts';
 
         if (!$this->table_exists()) {
-            $youtube_id = get_post_meta($video_post_id, '_ytflix_youtube_id', true);
+            $youtube_id = get_post_meta($video_post_id, '_ytcp_youtube_id', true);
             if (empty($youtube_id)) return [];
             return $this->fetch_from_youtube($youtube_id, $language);
         }
@@ -40,13 +40,13 @@ class YTFlix_Transcript {
 
         if ($cached) {
             $fetched = strtotime($cached->fetched_at);
-            $ttl = (int) get_option('ytflix_transcript_cache_ttl', 604800);
+            $ttl = (int) get_option('ytcp_transcript_cache_ttl', 604800);
             if ((time() - $fetched) < $ttl) {
                 return json_decode($cached->content, true);
             }
         }
 
-        $youtube_id = get_post_meta($video_post_id, '_ytflix_youtube_id', true);
+        $youtube_id = get_post_meta($video_post_id, '_ytcp_youtube_id', true);
         if (empty($youtube_id)) return [];
 
         $transcript = $this->fetch_from_youtube($youtube_id, $language);
@@ -85,14 +85,14 @@ class YTFlix_Transcript {
 
             return $captions;
         } catch (\Throwable $e) {
-            error_log('YTFlix Transcript Error [' . $youtube_id . ']: ' . $e->getMessage());
+            error_log('YTCP Transcript Error [' . $youtube_id . ']: ' . $e->getMessage());
             return [];
         }
     }
 
     private function save_transcript($video_post_id, $youtube_id, $language, $transcript) {
         global $wpdb;
-        $table = $wpdb->prefix . 'ytflix_transcripts';
+        $table = $wpdb->prefix . 'ytcp_transcripts';
 
         $lang_names = [
             'en' => 'English', 'es' => 'Spanish', 'fr' => 'French',
@@ -114,7 +114,7 @@ class YTFlix_Transcript {
 
     public function get_available_languages($video_post_id) {
         global $wpdb;
-        $table = $wpdb->prefix . 'ytflix_transcripts';
+        $table = $wpdb->prefix . 'ytcp_transcripts';
 
         return $wpdb->get_results($wpdb->prepare(
             "SELECT language_code, language_name FROM $table WHERE video_post_id = %d ORDER BY language_name",
@@ -124,11 +124,11 @@ class YTFlix_Transcript {
 
     public function sync_all_transcripts($batch_size = 10) {
         global $wpdb;
-        $table = $wpdb->prefix . 'ytflix_transcripts';
-        $ttl = (int) get_option('ytflix_transcript_cache_ttl', 604800);
+        $table = $wpdb->prefix . 'ytcp_transcripts';
+        $ttl = (int) get_option('ytcp_transcript_cache_ttl', 604800);
 
         $all_videos = get_posts([
-            'post_type'      => 'ytflix_video',
+            'post_type'      => 'ytcp_video',
             'posts_per_page' => -1,
             'post_status'    => 'publish',
             'fields'         => 'ids',

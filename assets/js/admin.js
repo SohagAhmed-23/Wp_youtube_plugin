@@ -1,12 +1,12 @@
 /**
- * YTFlix Admin JavaScript
+ * YTCP Admin JavaScript
  */
 (function($) {
     'use strict';
 
     $(document).ready(function() {
         // Media uploader for image fields
-        $('.ytflix-upload-btn').on('click', function(e) {
+        $('.ytcp-upload-btn').on('click', function(e) {
             e.preventDefault();
 
             var targetId = $(this).data('target');

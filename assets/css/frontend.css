@@ -1,48 +1,48 @@
 /* ==========================================================================
-   YTFlix - Oral Histories / Knowledge Hub Style Frontend CSS
+   YTCP - Oral Histories / Knowledge Hub Style Frontend CSS
    Copper/brown accent, centered hero, modal popups, tabbed sidebar
    ========================================================================== */
 
 :root {
-    --ytflix-bg: #1a1511;
-    --ytflix-bg-lighter: #221c16;
-    --ytflix-bg-card: #2a2218;
-    --ytflix-bg-card-hover: #35291d;
-    --ytflix-text: #d4c5b3;
-    --ytflix-text-dim: #8a7d6e;
-    --ytflix-text-bright: #f0e8dd;
-    --ytflix-accent: #c17a2f;
-    --ytflix-accent-hover: #d4872f;
-    --ytflix-accent-light: rgba(193,122,47,0.15);
-    --ytflix-border: #3d3428;
-    --ytflix-shadow: 0 4px 24px rgba(0,0,0,0.6);
-    --ytflix-radius: 6px;
-    --ytflix-transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    --ytflix-font: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    --ytcp-bg: #1a1511;
+    --ytcp-bg-lighter: #221c16;
+    --ytcp-bg-card: #2a2218;
+    --ytcp-bg-card-hover: #35291d;
+    --ytcp-text: #d4c5b3;
+    --ytcp-text-dim: #8a7d6e;
+    --ytcp-text-bright: #f0e8dd;
+    --ytcp-accent: #c17a2f;
+    --ytcp-accent-hover: #d4872f;
+    --ytcp-accent-light: rgba(193,122,47,0.15);
+    --ytcp-border: #3d3428;
+    --ytcp-shadow: 0 4px 24px rgba(0,0,0,0.6);
+    --ytcp-radius: 6px;
+    --ytcp-transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ytcp-font: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
 }
 
 /* Base */
-.ytflix-app {
-    font-family: var(--ytflix-font);
-    background: var(--ytflix-bg);
-    color: var(--ytflix-text);
+.ytcp-app {
+    font-family: var(--ytcp-font);
+    background: var(--ytcp-bg);
+    color: var(--ytcp-text);
     min-height: 100vh;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
 }
 
-.ytflix-app *,
-.ytflix-app *::before,
-.ytflix-app *::after {
+.ytcp-app *,
+.ytcp-app *::before,
+.ytcp-app *::after {
     box-sizing: border-box;
 }
 
-.ytflix-app a {
+.ytcp-app a {
     color: inherit;
     text-decoration: none;
 }
 
-.ytflix-app img {
+.ytcp-app img {
     max-width: 100%;
     height: auto;
 }
@@ -50,7 +50,7 @@
 /* ==========================================================================
    HERO SECTION - Centered layout matching Knowledge Hub
    ========================================================================== */
-.ytflix-hero {
+.ytcp-hero {
     position: relative;
     width: 100%;
     height: 45vh;
@@ -60,7 +60,7 @@
     background-color: #2a2016;
 }
 
-.ytflix-hero-bg {
+.ytcp-hero-bg {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -70,7 +70,7 @@
     z-index: 0;
 }
 
-.ytflix-hero-overlay {
+.ytcp-hero-overlay {
     position: absolute;
     inset: 0;
     z-index: 1;
@@ -85,7 +85,7 @@
     justify-content: center;
 }
 
-.ytflix-hero::after {
+.ytcp-hero::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -93,11 +93,11 @@
     right: 0;
     height: 120px;
     z-index: 1;
-    background: linear-gradient(to top, var(--ytflix-bg) 0%, transparent 100%);
+    background: linear-gradient(to top, var(--ytcp-bg) 0%, transparent 100%);
     pointer-events: none;
 }
 
-.ytflix-hero-content {
+.ytcp-hero-content {
     position: relative;
     z-index: 2;
     text-align: center;
@@ -105,7 +105,7 @@
     max-width: 700px;
 }
 
-.ytflix-channel-logo {
+.ytcp-channel-logo {
     width: 90px;
     height: 90px;
     border-radius: 50%;
@@ -113,34 +113,34 @@
     margin: 0 auto 20px;
     border: 3px solid rgba(193,122,47,0.5);
     box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-    background: var(--ytflix-bg-card);
+    background: var(--ytcp-bg-card);
 }
 
-.ytflix-channel-logo img {
+.ytcp-channel-logo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.ytflix-hero-title {
+.ytcp-hero-title {
     font-size: clamp(1.5rem, 3.5vw, 2.4rem);
     font-weight: 600;
-    color: var(--ytflix-text-bright);
+    color: var(--ytcp-text-bright);
     margin: 0 0 8px 0;
     line-height: 1.2;
     text-shadow: 0 2px 8px rgba(0,0,0,0.6);
 }
 
-.ytflix-hero-desc {
+.ytcp-hero-desc {
     font-size: 1rem;
-    color: var(--ytflix-text);
+    color: var(--ytcp-text);
     margin: 0 0 20px 0;
     line-height: 1.5;
     text-shadow: 0 1px 4px rgba(0,0,0,0.5);
     display: none;
 }
 
-.ytflix-hero-actions {
+.ytcp-hero-actions {
     display: flex;
     gap: 12px;
     justify-content: center;
@@ -148,123 +148,123 @@
     display: none;
 }
 
-.ytflix-btn-play-large {
+.ytcp-btn-play-large {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     padding: 10px 28px;
-    background: var(--ytflix-accent);
+    background: var(--ytcp-accent);
     color: #fff;
     font-size: 1rem;
     font-weight: 600;
     border: none;
-    border-radius: var(--ytflix-radius);
+    border-radius: var(--ytcp-radius);
     cursor: pointer;
-    transition: var(--ytflix-transition);
+    transition: var(--ytcp-transition);
     text-decoration: none;
 }
 
-.ytflix-btn-play-large:hover {
-    background: var(--ytflix-accent-hover);
+.ytcp-btn-play-large:hover {
+    background: var(--ytcp-accent-hover);
     transform: scale(1.02);
     color: #fff;
 }
 
-.ytflix-btn-info {
+.ytcp-btn-info {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     padding: 10px 28px;
     background: rgba(109,109,110,0.5);
-    color: var(--ytflix-text-bright);
+    color: var(--ytcp-text-bright);
     font-size: 1rem;
     font-weight: 600;
-    border: 1px solid var(--ytflix-border);
-    border-radius: var(--ytflix-radius);
+    border: 1px solid var(--ytcp-border);
+    border-radius: var(--ytcp-radius);
     cursor: pointer;
-    transition: var(--ytflix-transition);
+    transition: var(--ytcp-transition);
 }
 
-.ytflix-btn-info:hover {
+.ytcp-btn-info:hover {
     background: rgba(109,109,110,0.7);
 }
 
 /* ==========================================================================
    SEARCH SECTION
    ========================================================================== */
-.ytflix-search-section {
+.ytcp-search-section {
     position: relative;
     z-index: 10;
     padding: 30px 4% 10px;
 }
 
-.ytflix-search-container {
+.ytcp-search-container {
     width: 100%;
     position: relative;
 }
 
-.ytflix-search-input-wrap {
+.ytcp-search-input-wrap {
     position: relative;
     display: flex;
     align-items: center;
 }
 
-.ytflix-search-icon {
+.ytcp-search-icon {
     position: absolute;
     left: 16px;
-    color: var(--ytflix-text-dim);
+    color: var(--ytcp-text-dim);
     pointer-events: none;
 }
 
-.ytflix-search-input {
+.ytcp-search-input {
     width: 100%;
     padding: 12px 44px 12px 48px;
-    background: var(--ytflix-bg-card);
-    border: 1px solid var(--ytflix-border);
+    background: var(--ytcp-bg-card);
+    border: 1px solid var(--ytcp-border);
     border-radius: 50px;
-    color: var(--ytflix-text-bright);
+    color: var(--ytcp-text-bright);
     font-size: 0.95rem;
     outline: none;
-    transition: var(--ytflix-transition);
+    transition: var(--ytcp-transition);
 }
 
-.ytflix-search-input:focus {
-    border-color: var(--ytflix-accent);
-    box-shadow: 0 0 0 3px var(--ytflix-accent-light);
+.ytcp-search-input:focus {
+    border-color: var(--ytcp-accent);
+    box-shadow: 0 0 0 3px var(--ytcp-accent-light);
 }
 
-.ytflix-search-input::placeholder {
-    color: var(--ytflix-text-dim);
+.ytcp-search-input::placeholder {
+    color: var(--ytcp-text-dim);
 }
 
-.ytflix-search-clear {
+.ytcp-search-clear {
     position: absolute;
     right: 16px;
     background: none;
     border: none;
-    color: var(--ytflix-text-dim);
+    color: var(--ytcp-text-dim);
     font-size: 1.5rem;
     cursor: pointer;
     padding: 0;
     line-height: 1;
 }
 
-.ytflix-search-results {
+.ytcp-search-results {
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
     margin-top: 8px;
-    background: var(--ytflix-bg-card);
-    border: 1px solid var(--ytflix-border);
-    border-radius: var(--ytflix-radius);
+    background: var(--ytcp-bg-card);
+    border: 1px solid var(--ytcp-border);
+    border-radius: var(--ytcp-radius);
     max-height: 500px;
     overflow-y: auto;
-    box-shadow: var(--ytflix-shadow);
+    box-shadow: var(--ytcp-shadow);
     z-index: 100;
 }
 
-.ytflix-search-result-item {
+.ytcp-search-result-item {
     display: block;
     padding: 10px 16px;
     cursor: pointer;
@@ -273,144 +273,144 @@
     text-decoration: none;
 }
 
-.ytflix-search-result-item:last-child {
+.ytcp-search-result-item:last-child {
     border-bottom: none;
 }
 
-.ytflix-search-result-item:hover {
-    background: var(--ytflix-bg-card-hover);
+.ytcp-search-result-item:hover {
+    background: var(--ytcp-bg-card-hover);
 }
 
-.ytflix-search-result-info h4 {
+.ytcp-search-result-info h4 {
     margin: 0;
     font-size: 0.9rem;
-    color: var(--ytflix-text-bright);
+    color: var(--ytcp-text-bright);
     font-weight: 400;
 }
 
-.ytflix-search-no-results {
+.ytcp-search-no-results {
     padding: 24px;
     text-align: center;
-    color: var(--ytflix-text-dim);
+    color: var(--ytcp-text-dim);
 }
 
 /* ==========================================================================
    PLAYLIST ROWS - Character-based with accent bar
    ========================================================================== */
-.ytflix-rows-section {
+.ytcp-rows-section {
     padding: 20px 0 60px;
 }
 
-.ytflix-row {
+.ytcp-row {
     padding: 0 4%;
     margin-bottom: 36px;
 }
 
-.ytflix-row-header {
+.ytcp-row-header {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     margin-bottom: 14px;
 }
 
-.ytflix-row-title {
+.ytcp-row-title {
     font-size: 1.3rem;
     font-weight: 700;
-    color: var(--ytflix-text-bright);
+    color: var(--ytcp-text-bright);
     margin: 0;
     display: flex;
     align-items: center;
     gap: 0;
 }
 
-.ytflix-row-title::before {
+.ytcp-row-title::before {
     content: '';
     display: inline-block;
     width: 4px;
     height: 22px;
-    background: var(--ytflix-accent);
+    background: var(--ytcp-accent);
     border-radius: 2px;
     margin-right: 12px;
     flex-shrink: 0;
 }
 
-.ytflix-row-see-all {
+.ytcp-row-see-all {
     font-size: 0.85rem;
-    color: var(--ytflix-accent);
-    transition: var(--ytflix-transition);
+    color: var(--ytcp-accent);
+    transition: var(--ytcp-transition);
 }
 
-.ytflix-row-see-all:hover {
-    color: var(--ytflix-accent-hover);
+.ytcp-row-see-all:hover {
+    color: var(--ytcp-accent-hover);
 }
 
 /* Swiper customization */
-.ytflix-slider {
+.ytcp-slider {
     overflow: hidden;
     position: relative;
 }
 
-.ytflix-slider .swiper-slide {
+.ytcp-slider .swiper-slide {
     width: auto;
 }
 
-.ytflix-slider .swiper-button-prev,
-.ytflix-slider .swiper-button-next {
+.ytcp-slider .swiper-button-prev,
+.ytcp-slider .swiper-button-next {
     display: none;
 }
 
 /* ==========================================================================
    VIDEO CARDS - Title + date overlay at bottom
    ========================================================================== */
-.ytflix-video-card {
+.ytcp-video-card {
     width: 220px;
     cursor: pointer;
-    transition: var(--ytflix-transition);
-    border-radius: var(--ytflix-radius);
+    transition: var(--ytcp-transition);
+    border-radius: var(--ytcp-radius);
     overflow: hidden;
     display: block;
     position: relative;
 }
 
-.ytflix-video-card:hover {
+.ytcp-video-card:hover {
     transform: scale(1.05);
     z-index: 10;
-    box-shadow: var(--ytflix-shadow);
+    box-shadow: var(--ytcp-shadow);
 }
 
-.ytflix-card-thumb-wrap {
+.ytcp-card-thumb-wrap {
     position: relative;
     width: 100%;
     aspect-ratio: 16/9;
     overflow: hidden;
     background: #2a2218;
-    border-radius: var(--ytflix-radius);
+    border-radius: var(--ytcp-radius);
 }
 
-.ytflix-card-thumb-img {
+.ytcp-card-thumb-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: opacity 0.3s;
 }
 
-.ytflix-card-preview {
+.ytcp-card-preview {
     position: absolute;
     inset: 0;
     z-index: 2;
     display: none;
 }
 
-.ytflix-video-card:hover .ytflix-card-preview {
+.ytcp-video-card:hover .ytcp-card-preview {
     display: block;
 }
 
-.ytflix-video-card:hover .ytflix-card-thumb-img {
+.ytcp-video-card:hover .ytcp-card-thumb-img {
     opacity: 0;
 }
 
 /* Title + date overlay at bottom of card image */
-.ytflix-card-overlay-info {
+.ytcp-card-overlay-info {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -420,7 +420,7 @@
     z-index: 3;
 }
 
-.ytflix-card-overlay-title {
+.ytcp-card-overlay-title {
     font-size: 0.78rem;
     font-weight: 600;
     color: #fff;
@@ -433,12 +433,12 @@
     overflow: hidden;
 }
 
-.ytflix-card-overlay-date {
+.ytcp-card-overlay-date {
     font-size: 0.7rem;
     color: rgba(255,255,255,0.6);
 }
 
-.ytflix-card-duration {
+.ytcp-card-duration {
     position: absolute;
     bottom: 8px;
     right: 8px;
@@ -452,7 +452,7 @@
     display: none;
 }
 
-.ytflix-card-hover-overlay {
+.ytcp-card-hover-overlay {
     position: absolute;
     inset: 0;
     background: rgba(0,0,0,0.35);
@@ -464,11 +464,11 @@
     z-index: 5;
 }
 
-.ytflix-video-card:hover .ytflix-card-hover-overlay {
+.ytcp-video-card:hover .ytcp-card-hover-overlay {
     opacity: 1;
 }
 
-.ytflix-card-play-btn {
+.ytcp-card-play-btn {
     background: none;
     border: none;
     cursor: pointer;
@@ -477,11 +477,11 @@
     padding: 0;
 }
 
-.ytflix-card-play-btn:hover {
+.ytcp-card-play-btn:hover {
     transform: scale(1.15);
 }
 
-.ytflix-card-progress {
+.ytcp-card-progress {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -491,18 +491,18 @@
     z-index: 6;
 }
 
-.ytflix-card-progress-fill {
+.ytcp-card-progress-fill {
     height: 100%;
-    background: var(--ytflix-accent);
+    background: var(--ytcp-accent);
     transition: width 0.3s;
 }
 
 /* Hide the old separate info bar (info is now on the image overlay) */
-.ytflix-card-info-bar {
+.ytcp-card-info-bar {
     display: none;
 }
 
-.ytflix-card-number {
+.ytcp-card-number {
     position: absolute;
     top: 8px;
     left: 8px;
@@ -518,7 +518,7 @@
 /* ==========================================================================
    VIDEO MODAL POPUP (on card click)
    ========================================================================== */
-.ytflix-modal-backdrop {
+.ytcp-modal-backdrop {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.8);
@@ -531,13 +531,13 @@
     transition: opacity 0.3s, visibility 0.3s;
 }
 
-.ytflix-modal-backdrop.active {
+.ytcp-modal-backdrop.active {
     opacity: 1;
     visibility: visible;
 }
 
-.ytflix-modal {
-    background: var(--ytflix-bg-lighter);
+.ytcp-modal {
+    background: var(--ytcp-bg-lighter);
     border-radius: 10px;
     max-width: 850px;
     width: 90%;
@@ -545,21 +545,21 @@
     overflow-y: auto;
     position: relative;
     box-shadow: 0 8px 40px rgba(0,0,0,0.7);
-    animation: ytflix-modal-in 0.3s ease-out;
+    animation: ytcp-modal-in 0.3s ease-out;
 }
 
-@keyframes ytflix-modal-in {
+@keyframes ytcp-modal-in {
     from { transform: scale(0.95); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
 }
 
-.ytflix-modal-close {
+.ytcp-modal-close {
     position: absolute;
     top: 12px;
     left: 16px;
     background: none;
     border: none;
-    color: var(--ytflix-text-dim);
+    color: var(--ytcp-text-dim);
     font-size: 1.8rem;
     cursor: pointer;
     z-index: 10;
@@ -568,88 +568,88 @@
     padding: 0;
 }
 
-.ytflix-modal-close:hover {
-    color: var(--ytflix-text-bright);
+.ytcp-modal-close:hover {
+    color: var(--ytcp-text-bright);
 }
 
-.ytflix-modal-top {
+.ytcp-modal-top {
     display: flex;
     gap: 24px;
     padding: 30px 30px 20px;
     align-items: flex-start;
 }
 
-.ytflix-modal-preview {
+.ytcp-modal-preview {
     flex-shrink: 0;
     width: 300px;
     aspect-ratio: 16/9;
-    border-radius: var(--ytflix-radius);
+    border-radius: var(--ytcp-radius);
     overflow: hidden;
     background: #000;
 }
 
-.ytflix-modal-preview iframe,
-.ytflix-modal-preview img {
+.ytcp-modal-preview iframe,
+.ytcp-modal-preview img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border: none;
 }
 
-.ytflix-modal-info {
+.ytcp-modal-info {
     flex: 1;
     min-width: 0;
 }
 
-.ytflix-modal-info h2 {
-    color: var(--ytflix-accent);
+.ytcp-modal-info h2 {
+    color: var(--ytcp-accent);
     font-size: 1.3rem;
     font-weight: 700;
     margin: 0 0 12px 0;
 }
 
-.ytflix-modal-info p {
-    color: var(--ytflix-text);
+.ytcp-modal-info p {
+    color: var(--ytcp-text);
     font-size: 0.9rem;
     line-height: 1.6;
     margin: 0 0 16px 0;
 }
 
-.ytflix-modal-play-btn {
+.ytcp-modal-play-btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     padding: 10px 28px;
-    background: var(--ytflix-accent);
+    background: var(--ytcp-accent);
     color: #fff;
     font-size: 1rem;
     font-weight: 600;
     border: none;
-    border-radius: var(--ytflix-radius);
+    border-radius: var(--ytcp-radius);
     cursor: pointer;
-    transition: var(--ytflix-transition);
+    transition: var(--ytcp-transition);
     text-decoration: none;
 }
 
-.ytflix-modal-play-btn:hover {
-    background: var(--ytflix-accent-hover);
+.ytcp-modal-play-btn:hover {
+    background: var(--ytcp-accent-hover);
     color: #fff;
 }
 
-.ytflix-modal-episode {
+.ytcp-modal-episode {
     padding: 20px 30px 30px;
-    border-top: 1px solid var(--ytflix-border);
+    border-top: 1px solid var(--ytcp-border);
 }
 
-.ytflix-modal-episode h3 {
-    color: var(--ytflix-accent);
+.ytcp-modal-episode h3 {
+    color: var(--ytcp-accent);
     font-size: 1rem;
     font-weight: 600;
     margin: 0 0 8px 0;
 }
 
-.ytflix-modal-episode p {
-    color: var(--ytflix-text);
+.ytcp-modal-episode p {
+    color: var(--ytcp-text);
     font-size: 0.88rem;
     line-height: 1.6;
     margin: 0;
@@ -658,28 +658,28 @@
 /* ==========================================================================
    WATCH PAGE / PLAYER
    ========================================================================== */
-.ytflix-watch-page {
+.ytcp-watch-page {
     padding-top: 0;
 }
 
 /* Search bar on watch page */
-.ytflix-watch-page .ytflix-search-section {
+.ytcp-watch-page .ytcp-search-section {
     padding: 14px 4% 10px;
     margin-top: 0;
 }
 
-.ytflix-watch-page .ytflix-search-input {
+.ytcp-watch-page .ytcp-search-input {
     padding: 10px 44px 10px 48px;
     font-size: 0.9rem;
     background: rgba(42,34,24,0.7);
     border-color: rgba(61,52,40,0.5);
 }
 
-.ytflix-watch-page .ytflix-search-input:focus {
-    background: var(--ytflix-bg-card);
+.ytcp-watch-page .ytcp-search-input:focus {
+    background: var(--ytcp-bg-card);
 }
 
-.ytflix-watch-layout {
+.ytcp-watch-layout {
     display: grid;
     grid-template-columns: 1fr 400px;
     gap: 0;
@@ -687,12 +687,12 @@
     padding: 0 4%;
 }
 
-.ytflix-watch-main {
+.ytcp-watch-main {
     padding: 0;
 }
 
 /* Player container */
-.ytflix-player-container {
+.ytcp-player-container {
     position: relative;
     width: 100%;
     aspect-ratio: 16/9;
@@ -702,19 +702,19 @@
     box-shadow: 0 2px 16px rgba(0,0,0,0.4);
 }
 
-.ytflix-player {
+.ytcp-player {
     width: 100%;
     height: 100%;
 }
 
-.ytflix-player iframe {
+.ytcp-player iframe {
     width: 100%;
     height: 100%;
     border: none;
 }
 
 /* Player overlay controls */
-.ytflix-player-overlay {
+.ytcp-player-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -726,21 +726,21 @@
     z-index: 10;
 }
 
-.ytflix-player-container:hover .ytflix-player-overlay {
+.ytcp-player-container:hover .ytcp-player-overlay {
     opacity: 1;
 }
 
-.ytflix-player-controls {
+.ytcp-player-controls {
     display: flex;
     align-items: center;
     gap: 12px;
     flex-wrap: nowrap;
 }
 
-.ytflix-ctrl-btn {
+.ytcp-ctrl-btn {
     background: none;
     border: none;
-    color: var(--ytflix-text-bright);
+    color: var(--ytcp-text-bright);
     cursor: pointer;
     padding: 6px;
     border-radius: 4px;
@@ -749,11 +749,11 @@
     white-space: nowrap;
 }
 
-.ytflix-ctrl-btn:hover {
+.ytcp-ctrl-btn:hover {
     background: rgba(255,255,255,0.15);
 }
 
-#ytflix-skip-intro {
+#ytcp-skip-intro {
     background: rgba(255,255,255,0.2);
     padding: 6px 16px;
     border: 1px solid rgba(255,255,255,0.4);
@@ -761,7 +761,7 @@
 }
 
 /* Progress bar */
-.ytflix-progress-bar {
+.ytcp-progress-bar {
     flex: 1;
     height: 4px;
     background: rgba(255,255,255,0.2);
@@ -770,76 +770,76 @@
     position: relative;
 }
 
-.ytflix-progress-bar:hover { height: 7px; }
+.ytcp-progress-bar:hover { height: 7px; }
 
-.ytflix-progress-fill {
+.ytcp-progress-fill {
     height: 100%;
-    background: var(--ytflix-accent);
+    background: var(--ytcp-accent);
     border-radius: 3px;
     position: relative;
     transition: width 0.1s linear;
 }
 
-.ytflix-progress-handle {
+.ytcp-progress-handle {
     position: absolute;
     top: 50%;
     right: -6px;
     width: 12px;
     height: 12px;
-    background: var(--ytflix-accent);
+    background: var(--ytcp-accent);
     border-radius: 50%;
     transform: translateY(-50%);
     opacity: 0;
     transition: opacity 0.2s;
 }
 
-.ytflix-progress-bar:hover .ytflix-progress-handle { opacity: 1; }
+.ytcp-progress-bar:hover .ytcp-progress-handle { opacity: 1; }
 
-.ytflix-time {
+.ytcp-time {
     font-size: 0.8rem;
-    color: var(--ytflix-text);
+    color: var(--ytcp-text);
     white-space: nowrap;
     min-width: 90px;
     text-align: center;
 }
 
 /* Speed control */
-.ytflix-speed-control { position: relative; }
+.ytcp-speed-control { position: relative; }
 
-.ytflix-speed-menu {
+.ytcp-speed-menu {
     position: absolute;
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--ytflix-bg-card);
-    border: 1px solid var(--ytflix-border);
-    border-radius: var(--ytflix-radius);
+    background: var(--ytcp-bg-card);
+    border: 1px solid var(--ytcp-border);
+    border-radius: var(--ytcp-radius);
     padding: 4px;
     margin-bottom: 8px;
-    box-shadow: var(--ytflix-shadow);
+    box-shadow: var(--ytcp-shadow);
 }
 
-.ytflix-speed-menu button {
+.ytcp-speed-menu button {
     display: block;
     width: 100%;
     padding: 6px 16px;
     background: none;
     border: none;
-    color: var(--ytflix-text);
+    color: var(--ytcp-text);
     cursor: pointer;
     font-size: 0.85rem;
     border-radius: 3px;
     white-space: nowrap;
 }
 
-.ytflix-speed-menu button:hover,
-.ytflix-speed-menu button.active {
-    background: var(--ytflix-accent-light);
-    color: var(--ytflix-accent);
+.ytcp-speed-menu button:hover,
+.ytcp-speed-menu button.active {
+    background: var(--ytcp-accent-light);
+    color: var(--ytcp-accent);
 }
 
 /* Next episode overlay */
-.ytflix-next-overlay {
+.ytcp-next-overlay {
     position: absolute;
     inset: 0;
     background: rgba(0,0,0,0.85);
@@ -849,114 +849,114 @@
     z-index: 20;
 }
 
-.ytflix-next-info { text-align: center; }
+.ytcp-next-info { text-align: center; }
 
-.ytflix-next-info p {
-    color: var(--ytflix-text-dim);
+.ytcp-next-info p {
+    color: var(--ytcp-text-dim);
     margin: 0 0 8px 0;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-.ytflix-next-info h3 {
-    color: var(--ytflix-text-bright);
+.ytcp-next-info h3 {
+    color: var(--ytcp-text-bright);
     margin: 0 0 16px 0;
     font-size: 1.5rem;
 }
 
-.ytflix-next-countdown { color: var(--ytflix-text-dim); margin-bottom: 20px; }
-.ytflix-next-countdown span { color: var(--ytflix-accent); font-weight: 700; font-size: 1.2rem; }
+.ytcp-next-countdown { color: var(--ytcp-text-dim); margin-bottom: 20px; }
+.ytcp-next-countdown span { color: var(--ytcp-accent); font-weight: 700; font-size: 1.2rem; }
 
-.ytflix-btn-play {
+.ytcp-btn-play {
     display: inline-block;
     padding: 10px 32px;
-    background: var(--ytflix-accent);
+    background: var(--ytcp-accent);
     color: #fff;
     font-weight: 600;
-    border-radius: var(--ytflix-radius);
+    border-radius: var(--ytcp-radius);
     margin-right: 12px;
     text-decoration: none;
-    transition: var(--ytflix-transition);
+    transition: var(--ytcp-transition);
 }
 
-.ytflix-btn-play:hover { background: var(--ytflix-accent-hover); color: #fff; }
+.ytcp-btn-play:hover { background: var(--ytcp-accent-hover); color: #fff; }
 
-.ytflix-btn-cancel {
+.ytcp-btn-cancel {
     background: rgba(109,109,110,0.5);
-    color: var(--ytflix-text-bright);
+    color: var(--ytcp-text-bright);
     border: none;
     padding: 10px 24px;
-    border-radius: var(--ytflix-radius);
+    border-radius: var(--ytcp-radius);
     cursor: pointer;
     font-weight: 600;
-    transition: var(--ytflix-transition);
+    transition: var(--ytcp-transition);
 }
 
-.ytflix-btn-cancel:hover { background: rgba(109,109,110,0.7); }
+.ytcp-btn-cancel:hover { background: rgba(109,109,110,0.7); }
 
 /* Video info below player */
-.ytflix-video-info {
+.ytcp-video-info {
     padding: 20px 0 16px;
-    border-top: 1px solid var(--ytflix-border);
+    border-top: 1px solid var(--ytcp-border);
     margin-top: 2px;
 }
 
-.ytflix-video-info-header {
+.ytcp-video-info-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 20px;
 }
 
-.ytflix-video-title {
+.ytcp-video-title {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--ytflix-text-bright);
+    color: var(--ytcp-text-bright);
     margin: 0 0 8px 0;
     line-height: 1.3;
 }
 
-.ytflix-video-meta {
+.ytcp-video-meta {
     display: flex;
     gap: 16px;
-    color: var(--ytflix-text-dim);
+    color: var(--ytcp-text-dim);
     font-size: 0.85rem;
 }
 
-.ytflix-video-actions {
+.ytcp-video-actions {
     display: flex;
     gap: 8px;
     flex-shrink: 0;
 }
 
-.ytflix-action-btn {
+.ytcp-action-btn {
     display: flex;
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
     background: rgba(109,109,110,0.3);
-    border: 1px solid var(--ytflix-border);
-    border-radius: var(--ytflix-radius);
-    color: var(--ytflix-text);
+    border: 1px solid var(--ytcp-border);
+    border-radius: var(--ytcp-radius);
+    color: var(--ytcp-text);
     cursor: pointer;
     font-size: 0.85rem;
-    transition: var(--ytflix-transition);
+    transition: var(--ytcp-transition);
 }
 
-.ytflix-action-btn:hover { background: rgba(109,109,110,0.5); }
-.ytflix-action-btn.active { border-color: var(--ytflix-accent); color: var(--ytflix-accent); }
+.ytcp-action-btn:hover { background: rgba(109,109,110,0.5); }
+.ytcp-action-btn.active { border-color: var(--ytcp-accent); color: var(--ytcp-accent); }
 
 /* Download Transcript button */
-.ytflix-download-transcript-btn {
+.ytcp-download-transcript-btn {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     padding: 9px 20px;
     background: transparent;
-    color: var(--ytflix-accent);
-    border: 1.5px solid var(--ytflix-accent);
-    border-radius: var(--ytflix-radius);
+    color: var(--ytcp-accent);
+    border: 1.5px solid var(--ytcp-accent);
+    border-radius: var(--ytcp-radius);
     cursor: pointer;
     font-size: 0.85rem;
     font-weight: 600;
@@ -965,14 +965,14 @@
     flex-shrink: 0;
 }
 
-.ytflix-download-transcript-btn:hover {
-    background: var(--ytflix-accent);
+.ytcp-download-transcript-btn:hover {
+    background: var(--ytcp-accent);
     color: #fff;
 }
 
-.ytflix-video-description {
+.ytcp-video-description {
     margin-top: 10px;
-    color: var(--ytflix-text);
+    color: var(--ytcp-text);
     line-height: 1.65;
     font-size: 0.9rem;
     opacity: 0.9;
@@ -981,9 +981,9 @@
 /* ==========================================================================
    SIDEBAR - Tabbed (Episodes / Transcript)
    ========================================================================== */
-.ytflix-watch-sidebar {
-    background: var(--ytflix-bg-lighter);
-    border-left: 1px solid var(--ytflix-border);
+.ytcp-watch-sidebar {
+    background: var(--ytcp-bg-lighter);
+    border-left: 1px solid var(--ytcp-border);
     height: calc(100vh - 60px);
     overflow-y: auto;
     position: sticky;
@@ -993,24 +993,24 @@
 }
 
 /* Tabs */
-.ytflix-sidebar-tabs {
+.ytcp-sidebar-tabs {
     display: flex;
-    border-bottom: 1px solid var(--ytflix-border);
+    border-bottom: 1px solid var(--ytcp-border);
     position: sticky;
     top: 0;
     z-index: 5;
-    background: var(--ytflix-bg-lighter);
+    background: var(--ytcp-bg-lighter);
     flex-shrink: 0;
     gap: 0;
 }
 
-.ytflix-sidebar-tab {
+.ytcp-sidebar-tab {
     flex: 1;
     padding: 16px 16px 14px;
     text-align: center;
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--ytflix-text-dim);
+    color: var(--ytcp-text-dim);
     cursor: pointer;
     border: none;
     background: none;
@@ -1018,52 +1018,52 @@
     position: relative;
 }
 
-.ytflix-sidebar-tab::after {
+.ytcp-sidebar-tab::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 20%;
     right: 20%;
     height: 2.5px;
-    background: var(--ytflix-accent);
+    background: var(--ytcp-accent);
     border-radius: 2px 2px 0 0;
     transform: scaleX(0);
     transition: transform 0.25s ease;
 }
 
-.ytflix-sidebar-tab:hover {
-    color: var(--ytflix-text);
+.ytcp-sidebar-tab:hover {
+    color: var(--ytcp-text);
     background: rgba(255,255,255,0.03);
 }
 
-.ytflix-sidebar-tab.active {
-    color: var(--ytflix-accent);
+.ytcp-sidebar-tab.active {
+    color: var(--ytcp-accent);
     background: none;
 }
 
-.ytflix-sidebar-tab.active::after {
+.ytcp-sidebar-tab.active::after {
     transform: scaleX(1);
 }
 
 /* Tab content panels */
-.ytflix-sidebar-panel {
+.ytcp-sidebar-panel {
     display: none;
     flex: 1;
     overflow-y: auto;
 }
 
-.ytflix-sidebar-panel.active {
+.ytcp-sidebar-panel.active {
     display: block;
-    animation: ytflix-fade-in 0.25s ease;
+    animation: ytcp-fade-in 0.25s ease;
 }
 
-@keyframes ytflix-fade-in {
+@keyframes ytcp-fade-in {
     from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 /* Empty state (no transcript, no results, etc.) */
-.ytflix-empty-state {
+.ytcp-empty-state {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1073,29 +1073,29 @@
     gap: 12px;
 }
 
-.ytflix-empty-state-icon {
+.ytcp-empty-state-icon {
     width: 48px;
     height: 48px;
-    color: var(--ytflix-text-dim);
+    color: var(--ytcp-text-dim);
     opacity: 0.5;
 }
 
-.ytflix-empty-state-title {
+.ytcp-empty-state-title {
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--ytflix-text);
+    color: var(--ytcp-text);
     margin: 0;
 }
 
-.ytflix-empty-state-desc {
+.ytcp-empty-state-desc {
     font-size: 0.82rem;
-    color: var(--ytflix-text-dim);
+    color: var(--ytcp-text-dim);
     margin: 0;
     line-height: 1.5;
 }
 
 /* Episode list in sidebar */
-.ytflix-episode-item {
+.ytcp-episode-item {
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -1106,17 +1106,17 @@
     border-left: 3px solid transparent;
 }
 
-.ytflix-episode-item:hover {
-    background: var(--ytflix-bg-card-hover);
+.ytcp-episode-item:hover {
+    background: var(--ytcp-bg-card-hover);
     border-left-color: rgba(193,122,47,0.3);
 }
 
-.ytflix-episode-item.active {
-    background: var(--ytflix-accent-light);
-    border-left-color: var(--ytflix-accent);
+.ytcp-episode-item.active {
+    background: var(--ytcp-accent-light);
+    border-left-color: var(--ytcp-accent);
 }
 
-.ytflix-episode-thumb {
+.ytcp-episode-thumb {
     position: relative;
     width: 110px;
     aspect-ratio: 16/9;
@@ -1125,18 +1125,18 @@
     flex-shrink: 0;
 }
 
-.ytflix-episode-thumb img {
+.ytcp-episode-thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
 }
 
-.ytflix-episode-item:hover .ytflix-episode-thumb img {
+.ytcp-episode-item:hover .ytcp-episode-thumb img {
     transform: scale(1.05);
 }
 
-.ytflix-episode-duration {
+.ytcp-episode-duration {
     position: absolute;
     bottom: 4px;
     right: 4px;
@@ -1149,7 +1149,7 @@
     letter-spacing: 0.02em;
 }
 
-.ytflix-now-playing {
+.ytcp-now-playing {
     position: absolute;
     bottom: 3px;
     left: 3px;
@@ -1159,36 +1159,36 @@
     height: 14px;
 }
 
-.ytflix-now-playing span {
+.ytcp-now-playing span {
     display: block;
     width: 3px;
-    background: var(--ytflix-accent);
+    background: var(--ytcp-accent);
     border-radius: 1px;
-    animation: ytflix-equalizer 0.8s ease-in-out infinite alternate;
+    animation: ytcp-equalizer 0.8s ease-in-out infinite alternate;
 }
 
-.ytflix-now-playing span:nth-child(1) { height: 6px; animation-delay: 0s; }
-.ytflix-now-playing span:nth-child(2) { height: 12px; animation-delay: 0.2s; }
-.ytflix-now-playing span:nth-child(3) { height: 8px; animation-delay: 0.4s; }
+.ytcp-now-playing span:nth-child(1) { height: 6px; animation-delay: 0s; }
+.ytcp-now-playing span:nth-child(2) { height: 12px; animation-delay: 0.2s; }
+.ytcp-now-playing span:nth-child(3) { height: 8px; animation-delay: 0.4s; }
 
-@keyframes ytflix-equalizer {
+@keyframes ytcp-equalizer {
     0% { height: 3px; }
     100% { height: 14px; }
 }
 
-.ytflix-episode-num {
+.ytcp-episode-num {
     display: none;
 }
 
-.ytflix-episode-info {
+.ytcp-episode-info {
     padding-top: 2px;
 }
 
-.ytflix-episode-info h4 {
+.ytcp-episode-info h4 {
     margin: 0 0 4px 0;
     font-size: 0.84rem;
     font-weight: 600;
-    color: var(--ytflix-text-bright);
+    color: var(--ytcp-text-bright);
     line-height: 1.35;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -1197,9 +1197,9 @@
     transition: color 0.2s ease;
 }
 
-.ytflix-episode-info .ytflix-episode-desc {
+.ytcp-episode-info .ytcp-episode-desc {
     font-size: 0.76rem;
-    color: var(--ytflix-text-dim);
+    color: var(--ytcp-text-dim);
     line-height: 1.45;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -1208,27 +1208,27 @@
     margin: 0;
 }
 
-.ytflix-episode-item:hover .ytflix-episode-info h4 {
-    color: var(--ytflix-text-bright);
+.ytcp-episode-item:hover .ytcp-episode-info h4 {
+    color: var(--ytcp-text-bright);
 }
 
-.ytflix-episode-item.active .ytflix-episode-info h4 {
-    color: var(--ytflix-accent);
+.ytcp-episode-item.active .ytcp-episode-info h4 {
+    color: var(--ytcp-accent);
 }
 
 /* ==========================================================================
    TRANSCRIPT IN SIDEBAR
    ========================================================================== */
-.ytflix-transcript-panel-content {
+.ytcp-transcript-panel-content {
     padding: 0;
 }
 
-.ytflix-transcript-lines-sidebar {
+.ytcp-transcript-lines-sidebar {
     display: flex;
     flex-direction: column;
 }
 
-.ytflix-transcript-line {
+.ytcp-transcript-line {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -1239,49 +1239,49 @@
     border-bottom: 1px solid rgba(61,52,40,0.3);
 }
 
-.ytflix-transcript-line:hover {
-    background: var(--ytflix-bg-card-hover);
+.ytcp-transcript-line:hover {
+    background: var(--ytcp-bg-card-hover);
 }
 
-.ytflix-transcript-line.active {
-    background: var(--ytflix-accent-light);
-    border-left: 3px solid var(--ytflix-accent);
+.ytcp-transcript-line.active {
+    background: var(--ytcp-accent-light);
+    border-left: 3px solid var(--ytcp-accent);
 }
 
-.ytflix-transcript-text {
-    color: var(--ytflix-text);
+.ytcp-transcript-text {
+    color: var(--ytcp-text);
     font-size: 0.85rem;
     line-height: 1.5;
     flex: 1;
 }
 
-.ytflix-transcript-line.active .ytflix-transcript-text {
-    color: var(--ytflix-text-bright);
+.ytcp-transcript-line.active .ytcp-transcript-text {
+    color: var(--ytcp-text-bright);
 }
 
-.ytflix-transcript-time {
-    color: var(--ytflix-text-dim);
+.ytcp-transcript-time {
+    color: var(--ytcp-text-dim);
     font-size: 0.78rem;
     white-space: nowrap;
     flex-shrink: 0;
     padding-top: 2px;
 }
 
-.ytflix-transcript-line.active .ytflix-transcript-time {
-    color: var(--ytflix-accent);
+.ytcp-transcript-line.active .ytcp-transcript-time {
+    color: var(--ytcp-accent);
 }
 
 /* Old standalone transcript section - hidden on watch page since it's now in sidebar */
-.ytflix-watch-page .ytflix-transcript-section {
+.ytcp-watch-page .ytcp-transcript-section {
     display: none;
 }
 
-.ytflix-transcript-section {
+.ytcp-transcript-section {
     padding: 0 4%;
     margin-bottom: 40px;
 }
 
-.ytflix-transcript-header {
+.ytcp-transcript-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1290,50 +1290,50 @@
     gap: 10px;
 }
 
-.ytflix-transcript-header h3 {
+.ytcp-transcript-header h3 {
     margin: 0;
-    color: var(--ytflix-text-bright);
+    color: var(--ytcp-text-bright);
     font-size: 1.1rem;
 }
 
-.ytflix-transcript-controls {
+.ytcp-transcript-controls {
     display: flex;
     gap: 8px;
     align-items: center;
 }
 
-.ytflix-select {
+.ytcp-select {
     padding: 6px 12px;
-    background: var(--ytflix-bg-card);
-    border: 1px solid var(--ytflix-border);
-    color: var(--ytflix-text);
-    border-radius: var(--ytflix-radius);
+    background: var(--ytcp-bg-card);
+    border: 1px solid var(--ytcp-border);
+    color: var(--ytcp-text);
+    border-radius: var(--ytcp-radius);
     font-size: 0.85rem;
     cursor: pointer;
 }
 
-.ytflix-btn-sm {
+.ytcp-btn-sm {
     padding: 6px 14px;
     background: rgba(109,109,110,0.3);
-    border: 1px solid var(--ytflix-border);
-    color: var(--ytflix-text);
-    border-radius: var(--ytflix-radius);
+    border: 1px solid var(--ytcp-border);
+    color: var(--ytcp-text);
+    border-radius: var(--ytcp-radius);
     cursor: pointer;
     font-size: 0.85rem;
-    transition: var(--ytflix-transition);
+    transition: var(--ytcp-transition);
 }
 
-.ytflix-btn-sm:hover { background: rgba(109,109,110,0.5); }
+.ytcp-btn-sm:hover { background: rgba(109,109,110,0.5); }
 
-.ytflix-transcript-body {
-    background: var(--ytflix-bg-lighter);
-    border-radius: var(--ytflix-radius);
+.ytcp-transcript-body {
+    background: var(--ytcp-bg-lighter);
+    border-radius: var(--ytcp-radius);
     padding: 16px;
     max-height: 400px;
     overflow-y: auto;
 }
 
-.ytflix-transcript-lines {
+.ytcp-transcript-lines {
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -1342,7 +1342,7 @@
 /* ==========================================================================
    PLAYLIST PAGE
    ========================================================================== */
-.ytflix-playlist-hero {
+.ytcp-playlist-hero {
     position: relative;
     height: 50vh;
     min-height: 350px;
@@ -1350,103 +1350,103 @@
     background-position: center;
 }
 
-.ytflix-playlist-hero-overlay {
+.ytcp-playlist-hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, var(--ytflix-bg) 0%, rgba(26,21,17,0.6) 50%, rgba(26,21,17,0.3) 100%);
+    background: linear-gradient(to top, var(--ytcp-bg) 0%, rgba(26,21,17,0.6) 50%, rgba(26,21,17,0.3) 100%);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     padding: 40px 4%;
 }
 
-.ytflix-playlist-hero-overlay h1 {
+.ytcp-playlist-hero-overlay h1 {
     font-size: 2.2rem;
-    color: var(--ytflix-text-bright);
+    color: var(--ytcp-text-bright);
     margin: 0 0 8px 0;
 }
 
-.ytflix-playlist-desc {
-    color: var(--ytflix-text);
+.ytcp-playlist-desc {
+    color: var(--ytcp-text);
     max-width: 700px;
     margin: 0 0 12px 0;
     line-height: 1.5;
 }
 
-.ytflix-playlist-meta {
-    color: var(--ytflix-text-dim);
+.ytcp-playlist-meta {
+    color: var(--ytcp-text-dim);
     margin-bottom: 20px;
 }
 
-.ytflix-playlist-grid {
+.ytcp-playlist-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 16px;
     padding: 30px 4% 60px;
 }
 
-.ytflix-playlist-video-card {
+.ytcp-playlist-video-card {
     display: block;
-    border-radius: var(--ytflix-radius);
+    border-radius: var(--ytcp-radius);
     overflow: hidden;
-    background: var(--ytflix-bg-card);
-    transition: var(--ytflix-transition);
+    background: var(--ytcp-bg-card);
+    transition: var(--ytcp-transition);
 }
 
-.ytflix-playlist-video-card:hover {
+.ytcp-playlist-video-card:hover {
     transform: translateY(-4px);
-    box-shadow: var(--ytflix-shadow);
+    box-shadow: var(--ytcp-shadow);
 }
 
-.ytflix-playlist-video-card .ytflix-card-thumb {
+.ytcp-playlist-video-card .ytcp-card-thumb {
     position: relative;
     aspect-ratio: 16/9;
     overflow: hidden;
 }
 
-.ytflix-playlist-video-card .ytflix-card-thumb img {
+.ytcp-playlist-video-card .ytcp-card-thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.ytflix-playlist-video-card .ytflix-card-info {
+.ytcp-playlist-video-card .ytcp-card-info {
     padding: 12px;
 }
 
-.ytflix-playlist-video-card .ytflix-card-info h4 {
+.ytcp-playlist-video-card .ytcp-card-info h4 {
     margin: 0 0 6px 0;
     font-size: 0.88rem;
-    color: var(--ytflix-text-bright);
+    color: var(--ytcp-text-bright);
 }
 
-.ytflix-playlist-video-card .ytflix-card-views {
+.ytcp-playlist-video-card .ytcp-card-views {
     font-size: 0.78rem;
-    color: var(--ytflix-text-dim);
+    color: var(--ytcp-text-dim);
 }
 
 /* ==========================================================================
    SKELETON LOADERS
    ========================================================================== */
-.ytflix-skeleton-loader {
+.ytcp-skeleton-loader {
     display: flex;
     flex-direction: column;
     gap: 12px;
     padding: 16px;
 }
 
-.ytflix-skeleton-line {
+.ytcp-skeleton-line {
     height: 14px;
-    background: linear-gradient(90deg, var(--ytflix-bg-card) 25%, var(--ytflix-bg-card-hover) 50%, var(--ytflix-bg-card) 75%);
+    background: linear-gradient(90deg, var(--ytcp-bg-card) 25%, var(--ytcp-bg-card-hover) 50%, var(--ytcp-bg-card) 75%);
     background-size: 200% 100%;
     border-radius: 4px;
-    animation: ytflix-shimmer 1.5s infinite;
+    animation: ytcp-shimmer 1.5s infinite;
 }
 
-.ytflix-skeleton-line:nth-child(2) { width: 80%; }
-.ytflix-skeleton-line:nth-child(3) { width: 60%; }
+.ytcp-skeleton-line:nth-child(2) { width: 80%; }
+.ytcp-skeleton-line:nth-child(3) { width: 60%; }
 
-@keyframes ytflix-shimmer {
+@keyframes ytcp-shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
 }
@@ -1454,108 +1454,108 @@
 /* ==========================================================================
    CONTINUE WATCHING
    ========================================================================== */
-.ytflix-continue-row .ytflix-row-title::before {
-    background: var(--ytflix-accent);
+.ytcp-continue-row .ytcp-row-title::before {
+    background: var(--ytcp-accent);
 }
 
 /* ==========================================================================
    RESPONSIVE
    ========================================================================== */
 @media (max-width: 1024px) {
-    .ytflix-watch-layout {
+    .ytcp-watch-layout {
         grid-template-columns: 1fr;
         padding: 0;
     }
 
-    .ytflix-watch-main {
+    .ytcp-watch-main {
         padding: 0 4%;
     }
 
-    .ytflix-watch-sidebar {
+    .ytcp-watch-sidebar {
         height: auto;
         position: static;
         border-left: none;
-        border-top: 1px solid var(--ytflix-border);
+        border-top: 1px solid var(--ytcp-border);
         max-height: 500px;
     }
 
-    .ytflix-video-card { width: 200px; }
+    .ytcp-video-card { width: 200px; }
 
-    .ytflix-modal-top {
+    .ytcp-modal-top {
         flex-direction: column;
         gap: 16px;
     }
 
-    .ytflix-modal-preview { width: 100%; }
+    .ytcp-modal-preview { width: 100%; }
 }
 
 @media (max-width: 768px) {
-    .ytflix-hero { height: 35vh; min-height: 280px; }
-    .ytflix-hero-title { font-size: 1.4rem; }
-    .ytflix-channel-logo { width: 70px; height: 70px; }
+    .ytcp-hero { height: 35vh; min-height: 280px; }
+    .ytcp-hero-title { font-size: 1.4rem; }
+    .ytcp-channel-logo { width: 70px; height: 70px; }
 
-    .ytflix-video-card { width: 160px; }
-    .ytflix-row-title { font-size: 1.1rem; }
+    .ytcp-video-card { width: 160px; }
+    .ytcp-row-title { font-size: 1.1rem; }
 
-    .ytflix-video-info-header { flex-direction: column; }
-    .ytflix-video-title { font-size: 1.1rem; }
-    .ytflix-player-controls { gap: 6px; }
-    .ytflix-time { font-size: 0.7rem; min-width: 70px; }
+    .ytcp-video-info-header { flex-direction: column; }
+    .ytcp-video-title { font-size: 1.1rem; }
+    .ytcp-player-controls { gap: 6px; }
+    .ytcp-time { font-size: 0.7rem; min-width: 70px; }
 
-    .ytflix-modal { width: 95%; }
-    .ytflix-modal-top { padding: 24px 20px 16px; }
-    .ytflix-modal-episode { padding: 16px 20px 24px; }
+    .ytcp-modal { width: 95%; }
+    .ytcp-modal-top { padding: 24px 20px 16px; }
+    .ytcp-modal-episode { padding: 16px 20px 24px; }
 }
 
 @media (max-width: 480px) {
-    .ytflix-hero { height: 30vh; min-height: 240px; }
-    .ytflix-video-card { width: 140px; }
-    .ytflix-card-overlay-title { font-size: 0.7rem; }
-    .ytflix-episode-thumb { width: 90px; }
-    .ytflix-search-result-thumb { width: 80px; height: 45px; }
+    .ytcp-hero { height: 30vh; min-height: 240px; }
+    .ytcp-video-card { width: 140px; }
+    .ytcp-card-overlay-title { font-size: 0.7rem; }
+    .ytcp-episode-thumb { width: 90px; }
+    .ytcp-search-result-thumb { width: 80px; height: 45px; }
 }
 
 /* Scrollbar styling */
-.ytflix-watch-sidebar::-webkit-scrollbar,
-.ytflix-sidebar-panel::-webkit-scrollbar,
-.ytflix-transcript-body::-webkit-scrollbar,
-.ytflix-search-results::-webkit-scrollbar,
-.ytflix-modal::-webkit-scrollbar {
+.ytcp-watch-sidebar::-webkit-scrollbar,
+.ytcp-sidebar-panel::-webkit-scrollbar,
+.ytcp-transcript-body::-webkit-scrollbar,
+.ytcp-search-results::-webkit-scrollbar,
+.ytcp-modal::-webkit-scrollbar {
     width: 4px;
 }
 
-.ytflix-watch-sidebar::-webkit-scrollbar-track,
-.ytflix-sidebar-panel::-webkit-scrollbar-track,
-.ytflix-transcript-body::-webkit-scrollbar-track,
-.ytflix-search-results::-webkit-scrollbar-track,
-.ytflix-modal::-webkit-scrollbar-track {
+.ytcp-watch-sidebar::-webkit-scrollbar-track,
+.ytcp-sidebar-panel::-webkit-scrollbar-track,
+.ytcp-transcript-body::-webkit-scrollbar-track,
+.ytcp-search-results::-webkit-scrollbar-track,
+.ytcp-modal::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.ytflix-watch-sidebar::-webkit-scrollbar-thumb,
-.ytflix-sidebar-panel::-webkit-scrollbar-thumb,
-.ytflix-transcript-body::-webkit-scrollbar-thumb,
-.ytflix-search-results::-webkit-scrollbar-thumb,
-.ytflix-modal::-webkit-scrollbar-thumb {
+.ytcp-watch-sidebar::-webkit-scrollbar-thumb,
+.ytcp-sidebar-panel::-webkit-scrollbar-thumb,
+.ytcp-transcript-body::-webkit-scrollbar-thumb,
+.ytcp-search-results::-webkit-scrollbar-thumb,
+.ytcp-modal::-webkit-scrollbar-thumb {
     background: rgba(61,52,40,0.6);
     border-radius: 4px;
     transition: background 0.2s;
 }
 
-.ytflix-watch-sidebar::-webkit-scrollbar-thumb:hover,
-.ytflix-sidebar-panel::-webkit-scrollbar-thumb:hover,
-.ytflix-transcript-body::-webkit-scrollbar-thumb:hover,
-.ytflix-search-results::-webkit-scrollbar-thumb:hover,
-.ytflix-modal::-webkit-scrollbar-thumb:hover {
+.ytcp-watch-sidebar::-webkit-scrollbar-thumb:hover,
+.ytcp-sidebar-panel::-webkit-scrollbar-thumb:hover,
+.ytcp-transcript-body::-webkit-scrollbar-thumb:hover,
+.ytcp-search-results::-webkit-scrollbar-thumb:hover,
+.ytcp-modal::-webkit-scrollbar-thumb:hover {
     background: rgba(61,52,40,0.9);
 }
 
 /* Firefox scrollbar */
-.ytflix-watch-sidebar,
-.ytflix-sidebar-panel,
-.ytflix-transcript-body,
-.ytflix-search-results,
-.ytflix-modal {
+.ytcp-watch-sidebar,
+.ytcp-sidebar-panel,
+.ytcp-transcript-body,
+.ytcp-search-results,
+.ytcp-modal {
     scrollbar-width: thin;
     scrollbar-color: rgba(61,52,40,0.6) transparent;
 }
