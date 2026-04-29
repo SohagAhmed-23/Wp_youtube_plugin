@@ -79,6 +79,7 @@ class YTFlix_Sync {
         delete_option('ytflix_channel_banner');
         delete_option('ytflix_channel_name');
         delete_option('ytflix_hero_title');
+        delete_option('ytflix_uploads_playlist_id');
     }
 
     private function sync_channel_info() {
@@ -91,6 +92,12 @@ class YTFlix_Sync {
         $channel = $result['items'][0];
         $snippet = $channel['snippet'] ?? [];
         $branding = $channel['brandingSettings'] ?? [];
+        $content_details = $channel['contentDetails'] ?? [];
+
+        $uploads_playlist = $content_details['relatedPlaylists']['uploads'] ?? '';
+        if (!empty($uploads_playlist)) {
+            update_option('ytflix_uploads_playlist_id', $uploads_playlist);
+        }
 
         $channel_title = $snippet['title'] ?? '';
         if (!empty($channel_title)) {
@@ -119,11 +126,32 @@ class YTFlix_Sync {
         $channel_id = get_option('ytflix_channel_id', '');
         if (empty($channel_id)) return;
 
-        $result = $this->api->get_playlists($channel_id, 25);
-        if (is_wp_error($result) || empty($result['items'])) return;
+        $synced_yt_ids = [];
 
-        foreach ($result['items'] as $playlist) {
-            $this->sync_playlist($playlist['id'], $playlist);
+        $uploads_id = get_option('ytflix_uploads_playlist_id', '');
+        if (!empty($uploads_id)) {
+            $channel_name = get_option('ytflix_channel_name', 'All Videos');
+            $uploads_data = [
+                'id' => $uploads_id,
+                'snippet' => [
+                    'title'       => $channel_name,
+                    'description' => '',
+                    'publishedAt' => '',
+                    'thumbnails'  => ['high' => ['url' => '']],
+                ],
+                'contentDetails' => ['itemCount' => 0],
+            ];
+            $this->sync_playlist($uploads_id, $uploads_data);
+            $synced_yt_ids[] = $uploads_id;
+        }
+
+        $result = $this->api->get_playlists($channel_id, 25);
+        if (!is_wp_error($result) && !empty($result['items'])) {
+            foreach ($result['items'] as $playlist) {
+                if (!in_array($playlist['id'], $synced_yt_ids, true)) {
+                    $this->sync_playlist($playlist['id'], $playlist);
+                }
+            }
         }
     }
 

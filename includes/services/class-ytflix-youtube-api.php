@@ -168,7 +168,7 @@ class YTFlix_YouTube_API {
         }
 
         return $this->request('channels', [
-            'part' => 'snippet,statistics,brandingSettings',
+            'part' => 'snippet,contentDetails,statistics,brandingSettings',
             'id'   => $channel_id,
         ]);
     }
