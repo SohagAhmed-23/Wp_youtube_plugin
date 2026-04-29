@@ -52,6 +52,7 @@ class YTFlix_Admin {
         }
 
         $this->maybe_flush_rewrite_rules();
+        $this->maybe_auto_sync();
 
         // Handle manual sync
         if (isset($_POST['ytflix_manual_sync']) && check_admin_referer('ytflix_sync_action')) {
@@ -78,6 +79,45 @@ class YTFlix_Admin {
 
     public function sanitize_toggle($value) {
         return $value ? '1' : '0';
+    }
+
+    private function maybe_auto_sync() {
+        if (!isset($_GET['settings-updated']) || $_GET['settings-updated'] !== 'true') {
+            return;
+        }
+
+        $api_key = get_option('ytflix_api_key', '');
+        $channel_id = get_option('ytflix_channel_id', '');
+        $last_sync = get_option('ytflix_last_sync', '');
+
+        if (empty($api_key) || empty($channel_id) || !empty($last_sync)) {
+            return;
+        }
+
+        $sync = new YTFlix_Sync();
+        $sync->manual_sync();
+
+        $sync_error = get_option('ytflix_last_sync_error', '');
+        if (!empty($sync_error) && is_array($sync_error)) {
+            add_action('admin_notices', function() use ($sync_error) {
+                echo '<div class="notice notice-error"><p><strong>YTFlix:</strong> ' .
+                     esc_html__('First sync failed: ', 'ytflix') .
+                     esc_html($sync_error['message'] ?? 'Unknown error') .
+                     '</p></div>';
+            });
+        } else {
+            $video_count = wp_count_posts('ytflix_video')->publish ?? 0;
+            $playlist_count = wp_count_posts('ytflix_playlist')->publish ?? 0;
+            add_action('admin_notices', function() use ($video_count, $playlist_count) {
+                echo '<div class="notice notice-success"><p><strong>YTFlix:</strong> ' .
+                     sprintf(
+                         esc_html__('First sync complete! Imported %d videos and %d playlists.', 'ytflix'),
+                         $video_count,
+                         $playlist_count
+                     ) .
+                     '</p></div>';
+            });
+        }
     }
 
     private function maybe_flush_rewrite_rules() {
@@ -332,6 +372,11 @@ class YTFlix_Admin {
                 </div>
 
                 <?php submit_button(__('Save Settings', 'ytflix')); ?>
+                <?php if (empty(get_option('ytflix_last_sync', ''))): ?>
+                <p class="description" style="margin-top:-10px">
+                    <strong><?php esc_html_e('Your first YouTube sync will run automatically after saving.', 'ytflix'); ?></strong>
+                </p>
+                <?php endif; ?>
             </form>
         </div>
         <?php

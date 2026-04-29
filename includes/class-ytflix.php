@@ -124,10 +124,13 @@ class YTFlix {
 
         $last_sync = get_option('ytflix_last_sync', '');
         if (empty($last_sync)) {
+            $settings_url = admin_url('admin.php?page=ytflix-settings');
             $sync_url = admin_url('admin.php?page=ytflix-sync');
             echo '<div class="notice notice-info"><p><strong>YTFlix:</strong> ' .
                  sprintf(
-                     esc_html__('Setup complete! %sRun your first sync%s to import videos from YouTube.', 'ytflix'),
+                     esc_html__('API configured! %sSave Settings%s to auto-import your videos, or %sSync Now%s manually.', 'ytflix'),
+                     '<a href="' . esc_url($settings_url) . '">',
+                     '</a>',
                      '<a href="' . esc_url($sync_url) . '">',
                      '</a>'
                  ) .
