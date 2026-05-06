@@ -102,7 +102,7 @@ class YTCP {
             $settings_url = admin_url('admin.php?page=ytcp-settings');
             echo '<div class="notice notice-warning"><p><strong>YTChannel Pro:</strong> ' .
                  sprintf(
-                     esc_html__('YouTube API key is not configured. %sGo to Settings%s to set it up.', 'ytchannel-pro'),
+                     esc_html__('YouTube API key is not configured. %sGo to Settings%s to set it up.', 'sohag-video-youtube'),
                      '<a href="' . esc_url($settings_url) . '">',
                      '</a>'
                  ) .
@@ -114,7 +114,7 @@ class YTCP {
             $settings_url = admin_url('admin.php?page=ytcp-settings');
             echo '<div class="notice notice-warning"><p><strong>YTChannel Pro:</strong> ' .
                  sprintf(
-                     esc_html__('YouTube Channel ID is not configured. %sGo to Settings%s to set it up.', 'ytchannel-pro'),
+                     esc_html__('YouTube Channel ID is not configured. %sGo to Settings%s to set it up.', 'sohag-video-youtube'),
                      '<a href="' . esc_url($settings_url) . '">',
                      '</a>'
                  ) .

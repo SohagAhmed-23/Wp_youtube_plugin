@@ -1,11 +1,11 @@
-# YTCP - Netflix-Style YouTube Platform
+# Craftsmenit-Video Platform for YouTube
 
 [![WordPress](https://img.shields.io/badge/WordPress-5.8%2B-blue.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/License-GPL--2.0%2B-green.svg)](http://www.gnu.org/licenses/gpl-2.0.txt)
 [![Version](https://img.shields.io/badge/Version-1.0.0-orange.svg)](#changelog)
 
-A WordPress plugin that transforms any YouTube channel into a Netflix-style video browsing experience. Simply provide your YouTube API key and Channel ID, and YTCP automatically syncs all playlists and videos, presenting them in a sleek, dark-themed interface with horizontal sliders, a hero section, modal previews, a full-featured video player, transcripts, watch history, and more.
+A WordPress plugin that transforms any YouTube channel into a beautiful video platform. Simply provide your YouTube API key and Channel ID, and Craftsmenit automatically syncs all playlists and videos, presenting them in a sleek, dark-themed interface with horizontal sliders, a hero section, modal previews, a full-featured video player, transcripts, watch history, and more.
 
 ---
 
@@ -76,7 +76,7 @@ A WordPress plugin that transforms any YouTube channel into a Netflix-style vide
 - **WP Cron** -- Scheduled auto-sync with configurable intervals.
 - **Transient Caching** -- YouTube API responses cached as WordPress transients with configurable duration.
 - **Prepared Statements** -- All database queries use `$wpdb->prepare()` for security.
-- **Translation Ready** -- Full i18n support with the `ytchannel-pro` text domain.
+- **Translation Ready** -- Full i18n support with the `sohag-video-youtube` text domain.
 
 ---
 
@@ -489,7 +489,7 @@ Yes, but you should exclude AJAX endpoints and REST API routes from page caching
 - Admin dashboard, settings page, and sync management.
 - Channel switching with automatic content purge.
 - Fully responsive design.
-- Translation-ready with `ytchannel-pro` text domain.
+- Translation-ready with `sohag-video-youtube` text domain.
 
 ---
 

@@ -1,6 +1,6 @@
-=== YTChannel Pro - Netflix-Style YouTube Platform ===
-Contributors: sohagahmed
-Tags: youtube, netflix, video, playlist, streaming, video player, transcripts, youtube api, video gallery
+=== Craftsmenit-Video Platform for YouTube ===
+Contributors: sohagahmed, sohag007
+Tags: youtube, video, playlist, streaming, video player, transcripts, youtube api, video gallery
 Requires at least: 5.8
 Tested up to: 6.9
 Stable tag: 1.0.0
@@ -8,17 +8,17 @@ Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Transform any YouTube channel into a Netflix-style video browsing experience with automatic playlist sync, custom player, transcripts, watch history, and more.
+Transform any YouTube channel into a beautiful video platform with automatic playlist sync, custom player, transcripts, watch history, and more.
 
 == Description ==
 
-YTChannel Pro turns your WordPress site into a Netflix-inspired video platform powered by the YouTube Data API. Provide your API key and Channel ID, and the plugin automatically imports all playlists and videos, presenting them in a sleek, dark-themed interface with horizontal sliders, a hero section, modal previews, and a full-featured video player.
+Craftsmenit-Video Platform for YouTube turns your WordPress site into a beautiful video platform powered by the YouTube Data API. Provide your API key and Channel ID, and the plugin automatically imports all playlists and videos, presenting them in a sleek, dark-themed interface with horizontal sliders, a hero section, modal previews, and a full-featured video player.
 
 = Key Features =
 
 * **Automatic YouTube Sync** -- Import all playlists and videos from any YouTube channel. Schedule syncs hourly, twice daily, or daily via WP Cron.
 * **Channel Auto-Detection** -- Channel name, logo, and banner are automatically fetched and applied.
-* **Netflix-Style Home Page** -- Hero section, search bar, and horizontal Swiper.js playlist rows with video thumbnail cards.
+* **Beautiful Home Page** -- Hero section, search bar, and horizontal Swiper.js playlist rows with video thumbnail cards.
 * **Video Preview Modal** -- Click any card to open a popup with video preview and play button.
 * **Custom Video Player** -- Dedicated watch page using the YouTube IFrame API with custom controls (no native YouTube chrome).
 * **Tabbed Sidebar** -- Episodes tab lists all videos in the current playlist. Transcript tab displays synced captions with timestamps.
@@ -32,7 +32,7 @@ YTChannel Pro turns your WordPress site into a Netflix-inspired video platform p
 * **REST API** -- Full API at `/wp-json/ytcp/v1/` for videos, playlists, search, progress, favorites, and transcripts.
 * **Customizable** -- Accent color picker, configurable URL slugs, and feature toggles for transcripts, history, favorites, auto-play, and PiP.
 * **Responsive** -- Fully responsive design for desktop, tablet, and mobile.
-* **Translation Ready** -- i18n support with the `ytchannel-pro` text domain.
+* **Translation Ready** -- i18n support with the `sohag-video-youtube` text domain.
 * **Channel Switching** -- Changing the Channel ID and syncing purges old data and imports the new channel.
 
 = Custom Post Types =
@@ -72,11 +72,11 @@ YTChannel Pro turns your WordPress site into a Netflix-inspired video platform p
 
 == Installation ==
 
-1. Upload the `ytchannel-pro` folder to the `/wp-content/plugins/` directory, or install the plugin through the WordPress Plugins screen.
+1. Upload the `craftsmenit-video-platform-for-youtube` folder to the `/wp-content/plugins/` directory, or install the plugin through the WordPress Plugins screen.
 2. Activate the plugin through the **Plugins** screen in WordPress.
-3. Navigate to **YTChannel Pro > Settings** in the admin menu.
+3. Navigate to **Craftsmenit Video Platform > Settings** in the admin menu.
 4. Enter your **YouTube Data API v3 key** and **Channel ID**.
-5. Go to **YTChannel Pro > Sync** and click **Sync Now** to import playlists and videos.
+5. Go to **Craftsmenit Video Platform > Sync** and click **Sync Now** to import playlists and videos.
 6. Visit `/watch/` on your site or add the `[ytcp]` shortcode to any page.
 
 = Getting a YouTube API Key =
@@ -96,6 +96,40 @@ Your Channel ID is a 24-character string starting with `UC`. Find it on your You
 The plugin ships with Composer dependencies pre-installed in the `vendor/` directory. If you need to reinstall them:
 
 `cd wp-content/plugins/ytchannel-pro && composer install --no-dev`
+
+== External Services ==
+
+This plugin connects to external services to provide its full functionality. Please review the following:
+
+= YouTube Data API v3 (googleapis.com) =
+
+This plugin connects to Google's YouTube Data API to fetch and synchronize YouTube channel content (playlists, videos, metadata, transcripts).
+
+**What data is sent:**
+- Your YouTube API key (stored securely in WordPress options)
+- YouTube Channel ID
+- Requests for channel info, playlist listings, and video metadata
+- Requests are sent when: (1) manually syncing content from the admin dashboard, (2) during scheduled automatic syncs (via WP Cron), (3) when fetching transcripts for video display
+
+**Service Provider:** Google LLC
+
+**Terms of Service:** https://www.youtube.com/static/terms.html
+
+**Privacy Policy:** https://policies.google.com/privacy
+
+= YouTube IFrame API (youtube.com) =
+
+The custom video player uses YouTube's IFrame Embed API to display and control video playback on the watch/player pages.
+
+**What data is sent:**
+- Your video embeds are served through YouTube's iframe infrastructure
+- Standard YouTube analytics data (views, watch time) applies
+
+**Service Provider:** Google LLC
+
+**Terms of Service:** https://www.youtube.com/static/terms.html
+
+**Privacy Policy:** https://policies.google.com/privacy
 
 == Frequently Asked Questions ==
 
@@ -158,7 +192,7 @@ Yes. When fetching transcripts, the plugin looks for the requested language firs
 * Initial release.
 * YouTube channel sync with automatic playlist and video import.
 * Auto-fetch channel name, logo, and banner from YouTube.
-* Netflix-style home page with Swiper.js horizontal sliders.
+* Beautiful home page with Swiper.js horizontal sliders.
 * Video preview modal with play button.
 * Dedicated watch page with custom YouTube player controls.
 * Tabbed sidebar with Episodes and Transcript tabs.
@@ -177,7 +211,7 @@ Yes. When fetching transcripts, the plugin looks for the requested language firs
 * Admin dashboard, settings page, and sync management.
 * Channel switching with automatic content purge.
 * Fully responsive design.
-* Translation-ready (ytchannel-pro text domain).
+* Translation-ready (sohag-video-youtube text domain).
 * Custom post types: ytcp_video, ytcp_playlist.
 * Custom taxonomy: ytcp_genre.
 * Custom database tables: user_progress, transcripts, favorites.
@@ -185,4 +219,4 @@ Yes. When fetching transcripts, the plugin looks for the requested language firs
 == Upgrade Notice ==
 
 = 1.0.0 =
-Initial release of YTChannel Pro. Install and configure your YouTube API key and Channel ID to get started.
+Initial release. Install and configure your YouTube API key and Channel ID to get started.

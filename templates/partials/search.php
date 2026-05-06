@@ -9,7 +9,7 @@
             <input type="text"
                    id="ytcp-search-input"
                    class="ytcp-search-input"
-                   placeholder="<?php echo esc_attr__('Search episodes...', 'ytchannel-pro'); ?>"
+                   placeholder="<?php echo esc_attr__('Search episodes...', 'sohag-video-youtube'); ?>"
                    autocomplete="off">
             <button class="ytcp-search-clear" id="ytcp-search-clear" style="display:none">&times;</button>
         </div>

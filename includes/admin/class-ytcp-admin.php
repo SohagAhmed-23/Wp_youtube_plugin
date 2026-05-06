@@ -5,8 +5,8 @@ class YTCP_Admin {
 
     public function add_menu() {
         add_menu_page(
-            __('YTChannel Pro', 'ytchannel-pro'),
-            __('YTChannel Pro', 'ytchannel-pro'),
+            __('Craftsmenit Video Platform', 'sohag-video-youtube'),
+            __('Craftsmenit Video Platform', 'sohag-video-youtube'),
             'manage_options',
             'ytcp',
             [$this, 'render_dashboard'],
@@ -14,11 +14,11 @@ class YTCP_Admin {
             30
         );
 
-        add_submenu_page('ytcp', __('Dashboard', 'ytchannel-pro'), __('Dashboard', 'ytchannel-pro'), 'manage_options', 'ytcp', [$this, 'render_dashboard']);
-        add_submenu_page('ytcp', __('Settings', 'ytchannel-pro'), __('Settings', 'ytchannel-pro'), 'manage_options', 'ytcp-settings', [$this, 'render_settings']);
-        add_submenu_page('ytcp', __('Sync', 'ytchannel-pro'), __('Sync', 'ytchannel-pro'), 'manage_options', 'ytcp-sync', [$this, 'render_sync']);
-        add_submenu_page('ytcp', __('Videos', 'ytchannel-pro'), __('Videos', 'ytchannel-pro'), 'manage_options', 'edit.php?post_type=ytcp_video');
-        add_submenu_page('ytcp', __('Playlists', 'ytchannel-pro'), __('Playlists', 'ytchannel-pro'), 'manage_options', 'edit.php?post_type=ytcp_playlist');
+        add_submenu_page('ytcp', __('Dashboard', 'sohag-video-youtube'), __('Dashboard', 'sohag-video-youtube'), 'manage_options', 'ytcp', [$this, 'render_dashboard']);
+        add_submenu_page('ytcp', __('Settings', 'sohag-video-youtube'), __('Settings', 'sohag-video-youtube'), 'manage_options', 'ytcp-settings', [$this, 'render_settings']);
+        add_submenu_page('ytcp', __('Sync', 'sohag-video-youtube'), __('Sync', 'sohag-video-youtube'), 'manage_options', 'ytcp-sync', [$this, 'render_sync']);
+        add_submenu_page('ytcp', __('Videos', 'sohag-video-youtube'), __('Videos', 'sohag-video-youtube'), 'manage_options', 'edit.php?post_type=ytcp_video');
+        add_submenu_page('ytcp', __('Playlists', 'sohag-video-youtube'), __('Playlists', 'sohag-video-youtube'), 'manage_options', 'edit.php?post_type=ytcp_playlist');
     }
 
     private $toggle_fields = [
@@ -30,24 +30,31 @@ class YTCP_Admin {
     ];
 
     public function register_settings() {
-        $fields = [
-            'ytcp_api_key', 'ytcp_channel_id',
-            'ytcp_video_slug', 'ytcp_playlist_slug',
-            'ytcp_hero_image', 'ytcp_channel_logo',
-            'ytcp_hero_title', 'ytcp_hero_description',
-            'ytcp_cache_duration', 'ytcp_transcript_cache_ttl',
-            'ytcp_enable_transcripts',
-            'ytcp_enable_history', 'ytcp_enable_favorites',
-            'ytcp_enable_autoplay', 'ytcp_enable_pip',
-            'ytcp_accent_color', 'ytcp_sync_interval',
+        // Define field-specific sanitization callbacks
+        $field_callbacks = [
+            'ytcp_api_key' => [$this, 'sanitize_api_key'],
+            'ytcp_channel_id' => [$this, 'sanitize_channel_id'],
+            'ytcp_video_slug' => 'sanitize_title',
+            'ytcp_playlist_slug' => 'sanitize_title',
+            'ytcp_hero_image' => 'esc_url_raw',
+            'ytcp_channel_logo' => 'esc_url_raw',
+            'ytcp_hero_title' => 'sanitize_text_field',
+            'ytcp_hero_description' => 'sanitize_textarea_field',
+            'ytcp_cache_duration' => 'absint',
+            'ytcp_transcript_cache_ttl' => 'absint',
+            'ytcp_enable_transcripts' => [$this, 'sanitize_toggle'],
+            'ytcp_enable_history' => [$this, 'sanitize_toggle'],
+            'ytcp_enable_favorites' => [$this, 'sanitize_toggle'],
+            'ytcp_enable_autoplay' => [$this, 'sanitize_toggle'],
+            'ytcp_enable_pip' => [$this, 'sanitize_toggle'],
+            'ytcp_accent_color' => 'sanitize_hex_color',
+            'ytcp_sync_interval' => [$this, 'sanitize_sync_interval'],
         ];
 
-        foreach ($fields as $field) {
-            $callback = in_array($field, $this->toggle_fields, true)
-                ? [$this, 'sanitize_toggle']
-                : [$this, 'sanitize_field'];
+        foreach ($field_callbacks as $field => $callback) {
             register_setting('ytcp_settings', $field, [
                 'sanitize_callback' => $callback,
+                'type' => 'string',
             ]);
         }
 
@@ -59,7 +66,7 @@ class YTCP_Admin {
             $sync = new YTCP_Sync();
             $sync->manual_sync();
             add_action('admin_notices', function() {
-                echo '<div class="notice notice-success"><p>' . esc_html__('YouTube sync completed successfully!', 'ytchannel-pro') . '</p></div>';
+                echo '<div class="notice notice-success"><p>' . esc_html__('YouTube sync completed successfully!', 'sohag-video-youtube') . '</p></div>';
             });
         }
 
@@ -68,9 +75,27 @@ class YTCP_Admin {
             $api = new YTCP_YouTube_API();
             $api->clear_cache();
             add_action('admin_notices', function() {
-                echo '<div class="notice notice-success"><p>' . esc_html__('Cache cleared successfully!', 'ytchannel-pro') . '</p></div>';
+                echo '<div class="notice notice-success"><p>' . esc_html__('Cache cleared successfully!', 'sohag-video-youtube') . '</p></div>';
             });
         }
+    }
+
+    public function sanitize_api_key($value) {
+        return sanitize_text_field($value);
+    }
+
+    public function sanitize_channel_id($value) {
+        // Channel IDs are 24 characters starting with UC
+        $value = sanitize_text_field($value);
+        if (preg_match('/^UC[a-zA-Z0-9_-]{22}$/', $value)) {
+            return $value;
+        }
+        return '';
+    }
+
+    public function sanitize_sync_interval($value) {
+        $allowed = ['hourly', 'twicedaily', 'daily'];
+        return in_array($value, $allowed, true) ? $value : 'daily';
     }
 
     public function sanitize_field($value) {
@@ -101,7 +126,7 @@ class YTCP_Admin {
         if (!empty($sync_error) && is_array($sync_error)) {
             add_action('admin_notices', function() use ($sync_error) {
                 echo '<div class="notice notice-error"><p><strong>YTChannel Pro:</strong> ' .
-                     esc_html__('First sync failed: ', 'ytchannel-pro') .
+                     esc_html__('First sync failed: ', 'sohag-video-youtube') .
                      esc_html($sync_error['message'] ?? 'Unknown error') .
                      '</p></div>';
             });
@@ -111,7 +136,7 @@ class YTCP_Admin {
             add_action('admin_notices', function() use ($video_count, $playlist_count) {
                 echo '<div class="notice notice-success"><p><strong>YTChannel Pro:</strong> ' .
                      sprintf(
-                         esc_html__('First sync complete! Imported %d videos and %d playlists.', 'ytchannel-pro'),
+                         esc_html__('First sync complete! Imported %d videos and %d playlists.', 'sohag-video-youtube'),
                          $video_count,
                          $playlist_count
                      ) .
@@ -371,10 +396,10 @@ class YTCP_Admin {
                     </div>
                 </div>
 
-                <?php submit_button(__('Save Settings', 'ytchannel-pro')); ?>
+                <?php submit_button(__('Save Settings', 'sohag-video-youtube')); ?>
                 <?php if (empty(get_option('ytcp_last_sync', ''))): ?>
                 <p class="description" style="margin-top:-10px">
-                    <strong><?php esc_html_e('Your first YouTube sync will run automatically after saving.', 'ytchannel-pro'); ?></strong>
+                    <strong><?php esc_html_e('Your first YouTube sync will run automatically after saving.', 'sohag-video-youtube'); ?></strong>
                 </p>
                 <?php endif; ?>
             </form>

@@ -6,7 +6,7 @@ class YTCP_Frontend {
     public function enqueue_assets() {
         if (!$this->is_ytcp_page()) return;
 
-        wp_enqueue_style('ytcp-swiper', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css', [], '11.0');
+        wp_enqueue_style('ytcp-swiper', YTCP_PLUGIN_URL . 'assets/css/swiper-bundle.min.css', [], '11.0');
         wp_enqueue_style('ytcp-frontend', YTCP_PLUGIN_URL . 'assets/css/frontend.css', ['ytcp-swiper'], YTCP_VERSION);
 
         $accent = sanitize_hex_color(get_option('ytcp_accent_color', '#c17a2f'));
@@ -15,7 +15,7 @@ class YTCP_Frontend {
         }
         wp_add_inline_style('ytcp-frontend', ":root { --ytcp-accent: {$accent}; }");
 
-        wp_enqueue_script('ytcp-swiper', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], '11.0', true);
+        wp_enqueue_script('ytcp-swiper', YTCP_PLUGIN_URL . 'assets/js/swiper-bundle.min.js', [], '11.0', true);
         wp_enqueue_script('ytcp-frontend', YTCP_PLUGIN_URL . 'assets/js/frontend.js', ['jquery', 'ytcp-swiper'], YTCP_VERSION, true);
 
         if ($this->is_watch_page()) {

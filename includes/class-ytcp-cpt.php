@@ -9,11 +9,11 @@ class YTCP_CPT {
 
         register_post_type('ytcp_video', [
             'labels' => [
-                'name'          => __('Videos', 'ytchannel-pro'),
-                'singular_name' => __('Video', 'ytchannel-pro'),
-                'add_new_item'  => __('Add New Video', 'ytchannel-pro'),
-                'edit_item'     => __('Edit Video', 'ytchannel-pro'),
-                'search_items'  => __('Search Videos', 'ytchannel-pro'),
+                'name'          => __('Videos', 'sohag-video-youtube'),
+                'singular_name' => __('Video', 'sohag-video-youtube'),
+                'add_new_item'  => __('Add New Video', 'sohag-video-youtube'),
+                'edit_item'     => __('Edit Video', 'sohag-video-youtube'),
+                'search_items'  => __('Search Videos', 'sohag-video-youtube'),
             ],
             'public'              => true,
             'has_archive'         => true,
@@ -27,10 +27,10 @@ class YTCP_CPT {
 
         register_post_type('ytcp_playlist', [
             'labels' => [
-                'name'          => __('Playlists', 'ytchannel-pro'),
-                'singular_name' => __('Playlist', 'ytchannel-pro'),
-                'add_new_item'  => __('Add New Playlist', 'ytchannel-pro'),
-                'edit_item'     => __('Edit Playlist', 'ytchannel-pro'),
+                'name'          => __('Playlists', 'sohag-video-youtube'),
+                'singular_name' => __('Playlist', 'sohag-video-youtube'),
+                'add_new_item'  => __('Add New Playlist', 'sohag-video-youtube'),
+                'edit_item'     => __('Edit Playlist', 'sohag-video-youtube'),
             ],
             'public'       => true,
             'has_archive'  => true,
@@ -43,8 +43,8 @@ class YTCP_CPT {
 
         register_taxonomy('ytcp_genre', ['ytcp_video', 'ytcp_playlist'], [
             'labels' => [
-                'name'          => __('Genres', 'ytchannel-pro'),
-                'singular_name' => __('Genre', 'ytchannel-pro'),
+                'name'          => __('Genres', 'sohag-video-youtube'),
+                'singular_name' => __('Genre', 'sohag-video-youtube'),
             ],
             'public'       => true,
             'hierarchical' => true,

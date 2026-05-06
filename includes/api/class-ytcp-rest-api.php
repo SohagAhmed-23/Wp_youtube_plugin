@@ -113,7 +113,7 @@ class YTCP_REST_API {
 
     public function get_video($request) {
         $post = get_post($request['id']);
-        if (!$post || $post->post_type !== 'ytcp_video') {
+        if (!$post || $post->post_type !== 'ytcp_video' || $post->post_status !== 'publish') {
             return new WP_Error('not_found', 'Video not found', ['status' => 404]);
         }
 
@@ -121,8 +121,11 @@ class YTCP_REST_API {
 
         $playlist_id = get_post_meta($post->ID, '_ytcp_playlist_id', true);
         if ($playlist_id) {
-            $video['playlist'] = $this->format_playlist(get_post($playlist_id));
-            $video['playlist_videos'] = $this->get_playlist_videos($playlist_id);
+            $playlist = get_post($playlist_id);
+            if ($playlist && $playlist->post_status === 'publish') {
+                $video['playlist'] = $this->format_playlist($playlist);
+                $video['playlist_videos'] = $this->get_playlist_videos($playlist_id);
+            }
         }
 
         if (is_user_logged_in()) {
@@ -157,7 +160,7 @@ class YTCP_REST_API {
 
     public function get_playlist($request) {
         $post = get_post($request['id']);
-        if (!$post || $post->post_type !== 'ytcp_playlist') {
+        if (!$post || $post->post_type !== 'ytcp_playlist' || $post->post_status !== 'publish') {
             return new WP_Error('not_found', 'Playlist not found', ['status' => 404]);
         }
 
@@ -262,6 +265,12 @@ class YTCP_REST_API {
     }
 
     public function get_transcript($request) {
+        // Check that the requested video exists and is published
+        $video_post = get_post($request['id']);
+        if (!$video_post || $video_post->post_type !== 'ytcp_video' || $video_post->post_status !== 'publish') {
+            return new WP_Error('not_found', 'Video not found', ['status' => 404]);
+        }
+
         $transcript_svc = new YTCP_Transcript();
         $lang = $request->get_param('lang');
         $data = $transcript_svc->get_transcript($request['id'], $lang);

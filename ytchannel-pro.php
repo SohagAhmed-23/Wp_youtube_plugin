@@ -1,14 +1,14 @@
 <?php
 /**
- * Plugin Name: YTChannel Pro - Netflix-Style YouTube Platform
- * Plugin URI: https://wordpress.org/plugins/ytchannel-pro-netflix-style-youtube-platform/
- * Description: A Netflix-inspired video platform powered by YouTube API with hero sections, playlist sliders, video player, transcripts, and user progress tracking.
+ * Plugin Name: Craftsmenit-Video Platform for YouTube
+ * Plugin URI: https://wordpress.org/plugins/craftsmenit-video-platform-for-youtube/
+ * Description: A beautiful video platform powered by YouTube API with hero sections, playlist sliders, video player, transcripts, and user progress tracking.
  * Version: 1.0.0
  * Author: Sohag Ahmed
- * Author URI: https://profiles.wordpress.org/sohagahmed/
+ * Author URI: https://profiles.wordpress.org/sohag007/
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain: ytchannel-pro
+ * Text Domain: sohag-video-youtube
  * Domain Path: /languages
  * Requires at least: 5.8
  * Requires PHP: 7.4
