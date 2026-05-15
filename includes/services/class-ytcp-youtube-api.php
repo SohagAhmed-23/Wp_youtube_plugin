@@ -1,331 +1,527 @@
 <?php
-if (!defined('ABSPATH')) exit;
+/**
+ * YouTube Data API v3 wrapper with caching, quota tracking, and stale-data fallback.
+ *
+ * @package YTChannelProNetflixStyleYoutubePlatform
+ */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Wraps the YouTube Data API v3, adding transient caching, ETag support, and quota tracking.
+ */
 class YTCP_YouTube_API {
 
-    private $api_key;
-    private $base_url = 'https://www.googleapis.com/youtube/v3/';
+	/**
+	 * YouTube Data API key.
+	 *
+	 * @var string
+	 */
+	private $api_key;
 
-    private $endpoint_ttls = [
-        'channels'      => 43200,
-        'playlists'     => 21600,
-        'playlistItems' => 10800,
-        'videos'        => 3600,
-        'captions'      => 86400,
-        'search'        => 1800,
-    ];
+	/**
+	 * Base URL for all YouTube API requests.
+	 *
+	 * @var string
+	 */
+	private $base_url = 'https://www.googleapis.com/youtube/v3/';
 
-    private $endpoint_quota_costs = [
-        'channels'      => 1,
-        'playlists'     => 1,
-        'playlistItems' => 1,
-        'videos'        => 1,
-        'captions'      => 50,
-        'search'        => 100,
-    ];
+	/**
+	 * Per-endpoint cache durations in seconds.
+	 *
+	 * @var array
+	 */
+	private $endpoint_ttls = array(
+		'channels'      => 43200,
+		'playlists'     => 21600,
+		'playlistItems' => 10800,
+		'videos'        => 3600,
+		'captions'      => 86400,
+		'search'        => 1800,
+	);
 
-    public function __construct() {
-        $this->api_key = get_option('ytcp_api_key', '');
-    }
+	/**
+	 * Per-endpoint YouTube quota unit costs.
+	 *
+	 * @var array
+	 */
+	private $endpoint_quota_costs = array(
+		'channels'      => 1,
+		'playlists'     => 1,
+		'playlistItems' => 1,
+		'videos'        => 1,
+		'captions'      => 50,
+		'search'        => 100,
+	);
 
-    public function is_configured() {
-        return !empty($this->api_key);
-    }
+	/**
+	 * Constructor — loads the API key from WordPress options.
+	 */
+	public function __construct() {
+		$this->api_key = get_option( 'ytcp_api_key', '' );
+	}
 
-    private function get_cache_duration($endpoint) {
-        $base_duration = (int) get_option('ytcp_cache_duration', 3600);
-        if (isset($this->endpoint_ttls[$endpoint])) {
-            return $this->endpoint_ttls[$endpoint];
-        }
-        return $base_duration;
-    }
+	/**
+	 * Returns whether the YouTube API key is configured.
+	 *
+	 * @return bool
+	 */
+	public function is_configured() {
+		return ! empty( $this->api_key );
+	}
 
-    private function request($endpoint, $params = []) {
-        if (!$this->is_configured()) {
-            return new WP_Error('no_api_key', __('YouTube API key not configured.', 'ytchannel-pro'));
-        }
+	/**
+	 * Returns the cache TTL for a given endpoint.
+	 *
+	 * @param string $endpoint The YouTube API endpoint name.
+	 * @return int Duration in seconds.
+	 */
+	private function get_cache_duration( $endpoint ) {
+		$base_duration = (int) get_option( 'ytcp_cache_duration', 3600 );
+		if ( isset( $this->endpoint_ttls[ $endpoint ] ) ) {
+			return $this->endpoint_ttls[ $endpoint ];
+		}
+		return $base_duration;
+	}
 
-        $params['key'] = $this->api_key;
-        $url = $this->base_url . $endpoint . '?' . http_build_query($params);
-        $cache_key = 'ytcp_' . md5($url);
-        $etag_key = 'ytcp_etag_' . md5($url);
-        $stale_key = 'ytcp_stale_' . md5($url);
-        $cache_duration = $this->get_cache_duration($endpoint);
+	/**
+	 * Makes a cached request to the YouTube API.
+	 *
+	 * @param string $endpoint API endpoint (e.g. 'videos', 'playlists').
+	 * @param array  $params   Query parameters to include.
+	 * @return array|WP_Error
+	 */
+	private function request( $endpoint, $params = array() ) {
+		if ( ! $this->is_configured() ) {
+			return new WP_Error( 'no_api_key', __( 'YouTube API key not configured.', 'ytchannel-pro-netflix-style-youtube-platform' ) );
+		}
 
-        $cached = get_transient($cache_key);
-        if ($cached !== false) {
-            return $cached;
-        }
+		$params['key']  = $this->api_key;
+		$url            = $this->base_url . $endpoint . '?' . http_build_query( $params );
+		$cache_key      = 'ytcp_' . md5( $url );
+		$etag_key       = 'ytcp_etag_' . md5( $url );
+		$stale_key      = 'ytcp_stale_' . md5( $url );
+		$cache_duration = $this->get_cache_duration( $endpoint );
 
-        $headers = ['Referer' => home_url()];
-        $stored_etag = get_option($etag_key, '');
-        if (!empty($stored_etag)) {
-            $headers['If-None-Match'] = $stored_etag;
-        }
+		$cached = get_transient( $cache_key );
+		if ( false !== $cached ) {
+			return $cached;
+		}
 
-        $response = wp_remote_get($url, [
-            'timeout' => 30,
-            'headers' => $headers,
-        ]);
+		$headers     = array( 'Referer' => home_url() );
+		$stored_etag = get_option( $etag_key, '' );
+		if ( ! empty( $stored_etag ) ) {
+			$headers['If-None-Match'] = $stored_etag;
+		}
 
-        if (is_wp_error($response)) {
-            $this->log_api_warning($endpoint, 'request_failed', $response->get_error_message());
-            return $this->get_stale_or_error($stale_key, $response);
-        }
+		$response = wp_remote_get(
+			$url,
+			array(
+				'timeout' => 30,
+				'headers' => $headers,
+			)
+		);
 
-        $code = wp_remote_retrieve_response_code($response);
+		if ( is_wp_error( $response ) ) {
+			$this->log_api_warning( $endpoint, 'request_failed', $response->get_error_message() );
+			return $this->get_stale_or_error( $stale_key, $response );
+		}
 
-        if ($code === 304) {
-            $stale_data = get_option($stale_key, null);
-            if ($stale_data !== null) {
-                $data = maybe_unserialize($stale_data);
-                set_transient($cache_key, $data, $cache_duration);
-                $this->track_api_call($endpoint, 0);
-                return $data;
-            }
-        }
+		$code = wp_remote_retrieve_response_code( $response );
 
-        $body = json_decode(wp_remote_retrieve_body($response), true);
+		if ( 304 === $code ) {
+			$stale_data = get_option( $stale_key, null );
+			if ( null !== $stale_data ) {
+				$data = maybe_unserialize( $stale_data );
+				set_transient( $cache_key, $data, $cache_duration );
+				$this->track_api_call( $endpoint, 0 );
+				return $data;
+			}
+		}
 
-        if ($code === 403) {
-            $reason = $body['error']['errors'][0]['reason'] ?? '';
-            if ($reason === 'quotaExceeded') {
-                $this->handle_quota_exceeded();
-                return $this->get_stale_or_error($stale_key, new WP_Error('quota_exceeded', 'YouTube API quota exceeded'));
-            }
-        }
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
-        if ($code !== 200) {
-            $message = $body['error']['message'] ?? 'Unknown YouTube API error';
-            $error = new WP_Error('youtube_api_error', $message, ['status' => $code]);
-            $this->log_api_warning($endpoint, 'http_' . $code, $message);
-            return $this->get_stale_or_error($stale_key, $error);
-        }
+		if ( 403 === $code ) {
+			$reason = $body['error']['errors'][0]['reason'] ?? '';
+			if ( 'quotaExceeded' === $reason ) {
+				$this->handle_quota_exceeded();
+				return $this->get_stale_or_error( $stale_key, new WP_Error( 'quota_exceeded', 'YouTube API quota exceeded' ) );
+			}
+		}
 
-        $etag = wp_remote_retrieve_header($response, 'etag');
-        if (!empty($etag)) {
-            update_option($etag_key, $etag, false);
-        }
+		if ( 200 !== $code ) {
+			$message = $body['error']['message'] ?? 'Unknown YouTube API error';
+			$error   = new WP_Error( 'youtube_api_error', $message, array( 'status' => $code ) );
+			$this->log_api_warning( $endpoint, 'http_' . $code, $message );
+			return $this->get_stale_or_error( $stale_key, $error );
+		}
 
-        update_option($stale_key, $body, false);
-        set_transient($cache_key, $body, $cache_duration);
+		$etag = wp_remote_retrieve_header( $response, 'etag' );
+		if ( ! empty( $etag ) ) {
+			update_option( $etag_key, $etag, false );
+		}
 
-        $quota_cost = $this->endpoint_quota_costs[$endpoint] ?? 1;
-        $this->track_api_call($endpoint, $quota_cost);
+		update_option( $stale_key, $body, false );
+		set_transient( $cache_key, $body, $cache_duration );
 
-        return $body;
-    }
+		$quota_cost = $this->endpoint_quota_costs[ $endpoint ] ?? 1;
+		$this->track_api_call( $endpoint, $quota_cost );
 
-    private function get_stale_or_error($stale_key, $error) {
-        $stale_data = get_option($stale_key, null);
-        if ($stale_data !== null) {
-            $this->log_api_warning('fallback', 'serving_stale', 'Serving stale data due to API error');
-            return maybe_unserialize($stale_data);
-        }
-        return $error;
-    }
+		return $body;
+	}
 
-    private function track_api_call($endpoint, $quota_cost) {
-        $today = gmdate('Y-m-d');
-        $stats = get_option('ytcp_api_stats', []);
+	/**
+	 * Returns stale cached data if available, otherwise returns the provided error.
+	 *
+	 * @param string   $stale_key Option key under which stale data is stored.
+	 * @param WP_Error $error     The error to return if no stale data exists.
+	 * @return array|WP_Error
+	 */
+	private function get_stale_or_error( $stale_key, $error ) {
+		$stale_data = get_option( $stale_key, null );
+		if ( null !== $stale_data ) {
+			$this->log_api_warning( 'fallback', 'serving_stale', 'Serving stale data due to API error' );
+			return maybe_unserialize( $stale_data );
+		}
+		return $error;
+	}
 
-        if (!isset($stats[$today])) {
-            $stats = [$today => ['total_calls' => 0, 'total_quota' => 0, 'endpoints' => []]];
-        }
+	/**
+	 * Records an API call and its quota cost against today's usage totals.
+	 *
+	 * @param string $endpoint   The API endpoint name.
+	 * @param int    $quota_cost Quota units consumed by the call.
+	 * @return void
+	 */
+	private function track_api_call( $endpoint, $quota_cost ) {
+		$today = gmdate( 'Y-m-d' );
+		$stats = get_option( 'ytcp_api_stats', array() );
 
-        $stats[$today]['total_calls']++;
-        $stats[$today]['total_quota'] += $quota_cost;
+		if ( ! isset( $stats[ $today ] ) ) {
+			$stats = array(
+				$today => array(
+					'total_calls' => 0,
+					'total_quota' => 0,
+					'endpoints'   => array(),
+				),
+			);
+		}
 
-        if (!isset($stats[$today]['endpoints'][$endpoint])) {
-            $stats[$today]['endpoints'][$endpoint] = ['calls' => 0, 'quota' => 0];
-        }
-        $stats[$today]['endpoints'][$endpoint]['calls']++;
-        $stats[$today]['endpoints'][$endpoint]['quota'] += $quota_cost;
+		++$stats[ $today ]['total_calls'];
+		$stats[ $today ]['total_quota'] += $quota_cost;
 
-        update_option('ytcp_api_stats', $stats, false);
-    }
+		if ( ! isset( $stats[ $today ]['endpoints'][ $endpoint ] ) ) {
+			$stats[ $today ]['endpoints'][ $endpoint ] = array(
+				'calls' => 0,
+				'quota' => 0,
+			);
+		}
+		++$stats[ $today ]['endpoints'][ $endpoint ]['calls'];
+		$stats[ $today ]['endpoints'][ $endpoint ]['quota'] += $quota_cost;
 
-    private function handle_quota_exceeded() {
-        update_option('ytcp_quota_exceeded', current_time('mysql'), false);
-        $this->log_api_warning('quota', 'exceeded', 'YouTube API daily quota exceeded at ' . current_time('mysql'));
-    }
+		update_option( 'ytcp_api_stats', $stats, false );
+	}
 
-    private function log_api_warning($endpoint, $type, $message) {
-        $warnings = get_option('ytcp_api_warnings', []);
-        $warnings[] = [
-            'time'     => current_time('mysql'),
-            'endpoint' => $endpoint,
-            'type'     => $type,
-            'message'  => $message,
-        ];
-        $warnings = array_slice($warnings, -50);
-        update_option('ytcp_api_warnings', $warnings, false);
-    }
+	/**
+	 * Flags the quota as exceeded and records the time.
+	 *
+	 * @return void
+	 */
+	private function handle_quota_exceeded() {
+		update_option( 'ytcp_quota_exceeded', current_time( 'mysql' ), false );
+		$this->log_api_warning( 'quota', 'exceeded', 'YouTube API daily quota exceeded at ' . current_time( 'mysql' ) );
+	}
 
-    public function get_channel_info($channel_id = '') {
-        if (empty($channel_id)) {
-            $channel_id = get_option('ytcp_channel_id', '');
-        }
+	/**
+	 * Appends a warning entry to the stored API warnings log.
+	 *
+	 * @param string $endpoint The API endpoint where the warning occurred.
+	 * @param string $type     Short warning type identifier.
+	 * @param string $message  Human-readable warning message.
+	 * @return void
+	 */
+	private function log_api_warning( $endpoint, $type, $message ) {
+		$warnings   = get_option( 'ytcp_api_warnings', array() );
+		$warnings[] = array(
+			'time'     => current_time( 'mysql' ),
+			'endpoint' => $endpoint,
+			'type'     => $type,
+			'message'  => $message,
+		);
+		$warnings   = array_slice( $warnings, -50 );
+		update_option( 'ytcp_api_warnings', $warnings, false );
+	}
 
-        return $this->request('channels', [
-            'part' => 'snippet,contentDetails,statistics,brandingSettings',
-            'id'   => $channel_id,
-        ]);
-    }
+	/**
+	 * Fetches channel metadata from the YouTube Data API.
+	 *
+	 * @param string $channel_id Optional channel ID; defaults to the saved option.
+	 * @return array|WP_Error
+	 */
+	public function get_channel_info( $channel_id = '' ) {
+		if ( empty( $channel_id ) ) {
+			$channel_id = get_option( 'ytcp_channel_id', '' );
+		}
 
-    public function get_playlists($channel_id = '', $max_results = 25, $page_token = '') {
-        if (empty($channel_id)) {
-            $channel_id = get_option('ytcp_channel_id', '');
-        }
+		return $this->request(
+			'channels',
+			array(
+				'part' => 'snippet,contentDetails,statistics,brandingSettings',
+				'id'   => $channel_id,
+			)
+		);
+	}
 
-        $params = [
-            'part'       => 'snippet,contentDetails',
-            'channelId'  => $channel_id,
-            'maxResults' => $max_results,
-        ];
+	/**
+	 * Returns all playlists for a YouTube channel.
+	 *
+	 * @param string $channel_id  Optional channel ID; defaults to the saved option.
+	 * @param int    $max_results Maximum number of playlists to return.
+	 * @param string $page_token  Pagination token for the next results page.
+	 * @return array|WP_Error
+	 */
+	public function get_playlists( $channel_id = '', $max_results = 25, $page_token = '' ) {
+		if ( empty( $channel_id ) ) {
+			$channel_id = get_option( 'ytcp_channel_id', '' );
+		}
 
-        if ($page_token) {
-            $params['pageToken'] = $page_token;
-        }
+		$params = array(
+			'part'       => 'snippet,contentDetails',
+			'channelId'  => $channel_id,
+			'maxResults' => $max_results,
+		);
 
-        return $this->request('playlists', $params);
-    }
+		if ( $page_token ) {
+			$params['pageToken'] = $page_token;
+		}
 
-    public function get_playlist_by_id($playlist_id) {
-        return $this->request('playlists', [
-            'part' => 'snippet,contentDetails',
-            'id'   => $playlist_id,
-        ]);
-    }
+		return $this->request( 'playlists', $params );
+	}
 
-    public function get_playlist_items($playlist_id, $max_results = 50, $page_token = '') {
-        $params = [
-            'part'       => 'snippet,contentDetails',
-            'playlistId' => $playlist_id,
-            'maxResults' => $max_results,
-        ];
+	/**
+	 * Returns a single playlist by its YouTube playlist ID.
+	 *
+	 * @param string $playlist_id The YouTube playlist ID.
+	 * @return array|WP_Error
+	 */
+	public function get_playlist_by_id( $playlist_id ) {
+		return $this->request(
+			'playlists',
+			array(
+				'part' => 'snippet,contentDetails',
+				'id'   => $playlist_id,
+			)
+		);
+	}
 
-        if ($page_token) {
-            $params['pageToken'] = $page_token;
-        }
+	/**
+	 * Returns the items (videos) within a YouTube playlist.
+	 *
+	 * @param string $playlist_id  The YouTube playlist ID.
+	 * @param int    $max_results  Maximum number of items per page.
+	 * @param string $page_token   Pagination token.
+	 * @return array|WP_Error
+	 */
+	public function get_playlist_items( $playlist_id, $max_results = 50, $page_token = '' ) {
+		$params = array(
+			'part'       => 'snippet,contentDetails',
+			'playlistId' => $playlist_id,
+			'maxResults' => $max_results,
+		);
 
-        return $this->request('playlistItems', $params);
-    }
+		if ( $page_token ) {
+			$params['pageToken'] = $page_token;
+		}
 
-    public function get_video_details($video_ids) {
-        if (is_array($video_ids)) {
-            $video_ids = implode(',', $video_ids);
-        }
+		return $this->request( 'playlistItems', $params );
+	}
 
-        return $this->request('videos', [
-            'part' => 'snippet,contentDetails,statistics',
-            'id'   => $video_ids,
-        ]);
-    }
+	/**
+	 * Returns detailed metadata for one or more YouTube videos.
+	 *
+	 * @param array|string $video_ids Comma-separated list or array of YouTube video IDs.
+	 * @return array|WP_Error
+	 */
+	public function get_video_details( $video_ids ) {
+		if ( is_array( $video_ids ) ) {
+			$video_ids = implode( ',', $video_ids );
+		}
 
-    public function get_captions_list($video_id) {
-        return $this->request('captions', [
-            'part'    => 'snippet',
-            'videoId' => $video_id,
-        ]);
-    }
+		return $this->request(
+			'videos',
+			array(
+				'part' => 'snippet,contentDetails,statistics',
+				'id'   => $video_ids,
+			)
+		);
+	}
 
-    public function search_videos($query, $channel_id = '', $max_results = 20) {
-        if (empty($channel_id)) {
-            $channel_id = get_option('ytcp_channel_id', '');
-        }
+	/**
+	 * Returns the captions list for a YouTube video.
+	 *
+	 * @param string $video_id The YouTube video ID.
+	 * @return array|WP_Error
+	 */
+	public function get_captions_list( $video_id ) {
+		return $this->request(
+			'captions',
+			array(
+				'part'    => 'snippet',
+				'videoId' => $video_id,
+			)
+		);
+	}
 
-        $params = [
-            'part'       => 'snippet',
-            'q'          => $query,
-            'type'       => 'video',
-            'maxResults' => $max_results,
-        ];
+	/**
+	 * Searches for videos matching a query string, optionally filtered to a channel.
+	 *
+	 * @param string $query      The search query.
+	 * @param string $channel_id Optional channel ID to scope the search.
+	 * @param int    $max_results Maximum number of results.
+	 * @return array|WP_Error
+	 */
+	public function search_videos( $query, $channel_id = '', $max_results = 20 ) {
+		if ( empty( $channel_id ) ) {
+			$channel_id = get_option( 'ytcp_channel_id', '' );
+		}
 
-        if (!empty($channel_id)) {
-            $params['channelId'] = $channel_id;
-        }
+		$params = array(
+			'part'       => 'snippet',
+			'q'          => $query,
+			'type'       => 'video',
+			'maxResults' => $max_results,
+		);
 
-        return $this->request('search', $params);
-    }
+		if ( ! empty( $channel_id ) ) {
+			$params['channelId'] = $channel_id;
+		}
 
-    public function clear_cache() {
-        global $wpdb;
-        $wpdb->query(
-            $wpdb->prepare(
-                "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s",
-                '_transient_ytcp_%',
-                '_transient_timeout_ytcp_%',
-                'ytcp_etag_%',
-                'ytcp_stale_%'
-            )
-        );
-        delete_option('ytcp_api_stats');
-        delete_option('ytcp_api_warnings');
-        delete_option('ytcp_quota_exceeded');
-    }
+		return $this->request( 'search', $params );
+	}
 
-    public function get_api_stats() {
-        return get_option('ytcp_api_stats', []);
-    }
+	/**
+	 * Deletes all plugin transients, ETags, stale backups, and quota tracking options.
+	 *
+	 * @return void
+	 */
+	public function clear_cache() {
+		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s",
+				'_transient_ytcp_%',
+				'_transient_timeout_ytcp_%',
+				'ytcp_etag_%',
+				'ytcp_stale_%'
+			)
+		);
+		delete_option( 'ytcp_api_stats' );
+		delete_option( 'ytcp_api_warnings' );
+		delete_option( 'ytcp_quota_exceeded' );
+	}
 
-    public function get_api_warnings() {
-        return get_option('ytcp_api_warnings', []);
-    }
+	/**
+	 * Returns the stored API usage statistics.
+	 *
+	 * @return array
+	 */
+	public function get_api_stats() {
+		return get_option( 'ytcp_api_stats', array() );
+	}
 
-    public function get_cache_stats() {
-        global $wpdb;
+	/**
+	 * Returns the stored API warning log entries.
+	 *
+	 * @return array
+	 */
+	public function get_api_warnings() {
+		return get_option( 'ytcp_api_warnings', array() );
+	}
 
-        $transient_count = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE '_transient_ytcp_%' AND option_name NOT LIKE '_transient_timeout_%'"
-        );
+	/**
+	 * Returns counts of cached transients, ETags, stale backups, and transcripts.
+	 *
+	 * @return array
+	 */
+	public function get_cache_stats() {
+		global $wpdb;
 
-        $etag_count = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE 'ytcp_etag_%'"
-        );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared
+		$transient_count = (int) $wpdb->get_var(
+			"SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE '_transient_ytcp_%' AND option_name NOT LIKE '_transient_timeout_%'"
+		);
 
-        $stale_count = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE 'ytcp_stale_%'"
-        );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared
+		$etag_count = (int) $wpdb->get_var(
+			"SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE 'ytcp_etag_%'"
+		);
 
-        $transcript_count = 0;
-        $table = $wpdb->prefix . 'ytcp_transcripts';
-        if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table)) === $table) {
-            $transcript_count = (int) $wpdb->get_var("SELECT COUNT(*) FROM $table");
-        }
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared
+		$stale_count = (int) $wpdb->get_var(
+			"SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE 'ytcp_stale_%'"
+		);
 
-        return [
-            'transients'  => $transient_count,
-            'etags'       => $etag_count,
-            'stale'       => $stale_count,
-            'transcripts' => $transcript_count,
-        ];
-    }
+		$transcript_count = 0;
+		$table            = $wpdb->prefix . 'ytcp_transcripts';
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$transcript_count = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" );
+		}
 
-    public static function parse_duration($duration) {
-        $interval = new DateInterval($duration);
-        $seconds = ($interval->h * 3600) + ($interval->i * 60) + $interval->s;
-        return $seconds;
-    }
+		return array(
+			'transients'  => $transient_count,
+			'etags'       => $etag_count,
+			'stale'       => $stale_count,
+			'transcripts' => $transcript_count,
+		);
+	}
 
-    public static function format_duration($seconds) {
-        $hours = floor($seconds / 3600);
-        $minutes = floor(($seconds % 3600) / 60);
-        $secs = $seconds % 60;
+	/**
+	 * Parses an ISO 8601 duration string (PT#H#M#S) into total seconds.
+	 *
+	 * @param string $duration The ISO 8601 duration string.
+	 * @return int Total seconds.
+	 */
+	public static function parse_duration( $duration ) {
+		$interval = new DateInterval( $duration );
+		$seconds  = ( $interval->h * 3600 ) + ( $interval->i * 60 ) + $interval->s;
+		return $seconds;
+	}
 
-        if ($hours > 0) {
-            return sprintf('%d:%02d:%02d', $hours, $minutes, $secs);
-        }
-        return sprintf('%d:%02d', $minutes, $secs);
-    }
+	/**
+	 * Formats a duration in seconds as a human-readable time string (H:MM:SS or M:SS).
+	 *
+	 * @param int $seconds Total duration in seconds.
+	 * @return string
+	 */
+	public static function format_duration( $seconds ) {
+		$hours   = floor( $seconds / 3600 );
+		$minutes = floor( ( $seconds % 3600 ) / 60 );
+		$secs    = $seconds % 60;
 
-    public static function format_view_count($count) {
-        if ($count >= 1000000) {
-            return round($count / 1000000, 1) . 'M';
-        }
-        if ($count >= 1000) {
-            return round($count / 1000, 1) . 'K';
-        }
-        return number_format($count);
-    }
+		if ( $hours > 0 ) {
+			return sprintf( '%d:%02d:%02d', $hours, $minutes, $secs );
+		}
+		return sprintf( '%d:%02d', $minutes, $secs );
+	}
+
+	/**
+	 * Formats a view count as a short human-readable string (e.g. 1.2M or 350K).
+	 *
+	 * @param int $count The raw view count.
+	 * @return string
+	 */
+	public static function format_view_count( $count ) {
+		if ( 1000000 <= $count ) {
+			return round( $count / 1000000, 1 ) . 'M';
+		}
+		if ( 1000 <= $count ) {
+			return round( $count / 1000, 1 ) . 'K';
+		}
+		return number_format( $count );
+	}
 }
