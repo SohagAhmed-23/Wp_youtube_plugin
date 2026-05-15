@@ -2,7 +2,7 @@
 /**
  * Tracks and retrieves per-user video watch progress.
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

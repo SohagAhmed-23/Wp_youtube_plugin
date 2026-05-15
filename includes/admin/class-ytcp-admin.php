@@ -2,7 +2,7 @@
 /**
  * Admin page controller — menus, settings, sync actions and asset enqueueing.
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -21,8 +21,8 @@ class YTCP_Admin {
 	 */
 	public function add_menu() {
 		add_menu_page(
-			__( 'Craftsmenit Video Platform', 'ytchannel-pro-netflix-style-youtube-platform' ),
-			__( 'Craftsmenit Video Platform', 'ytchannel-pro-netflix-style-youtube-platform' ),
+			__( 'Craftsmenit Video Platform', 'craftsmenit-video-platform-for-youtube' ),
+			__( 'Craftsmenit Video Platform', 'craftsmenit-video-platform-for-youtube' ),
 			'manage_options',
 			'ytcp',
 			array( $this, 'render_dashboard' ),
@@ -30,11 +30,11 @@ class YTCP_Admin {
 			30
 		);
 
-		add_submenu_page( 'ytcp', __( 'Dashboard', 'ytchannel-pro-netflix-style-youtube-platform' ), __( 'Dashboard', 'ytchannel-pro-netflix-style-youtube-platform' ), 'manage_options', 'ytcp', array( $this, 'render_dashboard' ) );
-		add_submenu_page( 'ytcp', __( 'Settings', 'ytchannel-pro-netflix-style-youtube-platform' ), __( 'Settings', 'ytchannel-pro-netflix-style-youtube-platform' ), 'manage_options', 'ytcp-settings', array( $this, 'render_settings' ) );
-		add_submenu_page( 'ytcp', __( 'Sync', 'ytchannel-pro-netflix-style-youtube-platform' ), __( 'Sync', 'ytchannel-pro-netflix-style-youtube-platform' ), 'manage_options', 'ytcp-sync', array( $this, 'render_sync' ) );
-		add_submenu_page( 'ytcp', __( 'Videos', 'ytchannel-pro-netflix-style-youtube-platform' ), __( 'Videos', 'ytchannel-pro-netflix-style-youtube-platform' ), 'manage_options', 'edit.php?post_type=ytcp_video' );
-		add_submenu_page( 'ytcp', __( 'Playlists', 'ytchannel-pro-netflix-style-youtube-platform' ), __( 'Playlists', 'ytchannel-pro-netflix-style-youtube-platform' ), 'manage_options', 'edit.php?post_type=ytcp_playlist' );
+		add_submenu_page( 'ytcp', __( 'Dashboard', 'craftsmenit-video-platform-for-youtube' ), __( 'Dashboard', 'craftsmenit-video-platform-for-youtube' ), 'manage_options', 'ytcp', array( $this, 'render_dashboard' ) );
+		add_submenu_page( 'ytcp', __( 'Settings', 'craftsmenit-video-platform-for-youtube' ), __( 'Settings', 'craftsmenit-video-platform-for-youtube' ), 'manage_options', 'ytcp-settings', array( $this, 'render_settings' ) );
+		add_submenu_page( 'ytcp', __( 'Sync', 'craftsmenit-video-platform-for-youtube' ), __( 'Sync', 'craftsmenit-video-platform-for-youtube' ), 'manage_options', 'ytcp-sync', array( $this, 'render_sync' ) );
+		add_submenu_page( 'ytcp', __( 'Videos', 'craftsmenit-video-platform-for-youtube' ), __( 'Videos', 'craftsmenit-video-platform-for-youtube' ), 'manage_options', 'edit.php?post_type=ytcp_video' );
+		add_submenu_page( 'ytcp', __( 'Playlists', 'craftsmenit-video-platform-for-youtube' ), __( 'Playlists', 'craftsmenit-video-platform-for-youtube' ), 'manage_options', 'edit.php?post_type=ytcp_playlist' );
 	}
 
 	/**
@@ -98,7 +98,7 @@ class YTCP_Admin {
 			add_action(
 				'admin_notices',
 				function () {
-					echo '<div class="notice notice-success"><p>' . esc_html__( 'YouTube sync completed successfully!', 'ytchannel-pro-netflix-style-youtube-platform' ) . '</p></div>';
+					echo '<div class="notice notice-success"><p>' . esc_html__( 'YouTube sync completed successfully!', 'craftsmenit-video-platform-for-youtube' ) . '</p></div>';
 				}
 			);
 		}
@@ -110,7 +110,7 @@ class YTCP_Admin {
 			add_action(
 				'admin_notices',
 				function () {
-					echo '<div class="notice notice-success"><p>' . esc_html__( 'Cache cleared successfully!', 'ytchannel-pro-netflix-style-youtube-platform' ) . '</p></div>';
+					echo '<div class="notice notice-success"><p>' . esc_html__( 'Cache cleared successfully!', 'craftsmenit-video-platform-for-youtube' ) . '</p></div>';
 				}
 			);
 		}
@@ -199,7 +199,7 @@ class YTCP_Admin {
 				'admin_notices',
 				function () use ( $sync_error ) {
 					echo '<div class="notice notice-error"><p><strong>YTChannel Pro:</strong> ' .
-					esc_html__( 'First sync failed: ', 'ytchannel-pro-netflix-style-youtube-platform' ) .
+					esc_html__( 'First sync failed: ', 'craftsmenit-video-platform-for-youtube' ) .
 					esc_html( $sync_error['message'] ?? 'Unknown error' ) .
 					'</p></div>';
 				}
@@ -213,7 +213,7 @@ class YTCP_Admin {
 					echo '<div class="notice notice-success"><p><strong>YTChannel Pro:</strong> ' .
 					sprintf(
 						/* translators: 1: number of videos imported, 2: number of playlists imported */
-						esc_html__( 'First sync complete! Imported %1$d videos and %2$d playlists.', 'ytchannel-pro-netflix-style-youtube-platform' ),
+						esc_html__( 'First sync complete! Imported %1$d videos and %2$d playlists.', 'craftsmenit-video-platform-for-youtube' ),
 						esc_html( $video_count ),
 						esc_html( $playlist_count )
 					) .
@@ -516,10 +516,10 @@ class YTCP_Admin {
 					</div>
 				</div>
 
-				<?php submit_button( __( 'Save Settings', 'ytchannel-pro-netflix-style-youtube-platform' ) ); ?>
+				<?php submit_button( __( 'Save Settings', 'craftsmenit-video-platform-for-youtube' ) ); ?>
 				<?php if ( empty( get_option( 'ytcp_last_sync', '' ) ) ) : ?>
 				<p class="description" style="margin-top:-10px">
-					<strong><?php esc_html_e( 'Your first YouTube sync will run automatically after saving.', 'ytchannel-pro-netflix-style-youtube-platform' ); ?></strong>
+					<strong><?php esc_html_e( 'Your first YouTube sync will run automatically after saving.', 'craftsmenit-video-platform-for-youtube' ); ?></strong>
 				</p>
 				<?php endif; ?>
 			</form>

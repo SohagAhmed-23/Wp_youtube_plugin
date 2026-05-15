@@ -2,7 +2,7 @@
 /**
  * Template: playlist-row.php
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

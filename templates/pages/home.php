@@ -2,7 +2,7 @@
 /**
  * Template: home.php
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

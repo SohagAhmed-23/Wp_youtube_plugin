@@ -2,7 +2,7 @@
 /**
  * Registers and handles all plugin shortcodes.
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

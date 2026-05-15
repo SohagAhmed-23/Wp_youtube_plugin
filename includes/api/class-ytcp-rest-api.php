@@ -2,7 +2,7 @@
 /**
  * Registers and handles all plugin REST API endpoints.
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

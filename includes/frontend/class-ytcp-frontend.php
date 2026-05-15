@@ -2,7 +2,7 @@
 /**
  * Handles frontend asset enqueueing, template loading and rewrite rules.
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

@@ -2,7 +2,7 @@
 /**
  * Template: search.php
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 ?>
@@ -16,7 +16,7 @@
 			<input type="text"
 					id="ytcp-search-input"
 					class="ytcp-search-input"
-					placeholder="<?php echo esc_attr__( 'Search episodes...', 'ytchannel-pro-netflix-style-youtube-platform' ); ?>"
+					placeholder="<?php echo esc_attr__( 'Search episodes...', 'craftsmenit-video-platform-for-youtube' ); ?>"
 					autocomplete="off">
 			<button class="ytcp-search-clear" id="ytcp-search-clear" style="display:none">&times;</button>
 		</div>

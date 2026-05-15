@@ -2,7 +2,7 @@
 /**
  * Template: modal.php
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 ?>

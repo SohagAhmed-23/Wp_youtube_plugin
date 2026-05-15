@@ -32,7 +32,7 @@ Craftsmenit-Video Platform for YouTube turns your WordPress site into a beautifu
 * **REST API** -- Full API at `/wp-json/ytcp/v1/` for videos, playlists, search, progress, favorites, and transcripts.
 * **Customizable** -- Accent color picker, configurable URL slugs, and feature toggles for transcripts, history, favorites, auto-play, and PiP.
 * **Responsive** -- Fully responsive design for desktop, tablet, and mobile.
-* **Translation Ready** -- i18n support with the `ytchannel-pro-netflix-style-youtube-platform` text domain.
+* **Translation Ready** -- i18n support with the `craftsmenit-video-platform-for-youtube` text domain.
 * **Channel Switching** -- Changing the Channel ID and syncing purges old data and imports the new channel.
 
 = Custom Post Types =
@@ -95,7 +95,7 @@ Your Channel ID is a 24-character string starting with `UC`. Find it on your You
 
 The plugin ships with Composer dependencies pre-installed in the `vendor/` directory. If you need to reinstall them:
 
-`cd wp-content/plugins/ytchannel-pro-netflix-style-youtube-platform && composer install --no-dev`
+`cd wp-content/plugins/craftsmenit-video-platform-for-youtube && composer install --no-dev`
 
 == External Services ==
 
@@ -211,7 +211,7 @@ Yes. When fetching transcripts, the plugin looks for the requested language firs
 * Admin dashboard, settings page, and sync management.
 * Channel switching with automatic content purge.
 * Fully responsive design.
-* Translation-ready (ytchannel-pro-netflix-style-youtube-platform text domain).
+* Translation-ready (craftsmenit-video-platform-for-youtube text domain).
 * Custom post types: ytcp_video, ytcp_playlist.
 * Custom taxonomy: ytcp_genre.
 * Custom database tables: user_progress, transcripts, favorites.

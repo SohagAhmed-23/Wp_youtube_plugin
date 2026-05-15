@@ -2,7 +2,7 @@
 /**
  * Fetches, caches, and serves video transcripts from YouTube.
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

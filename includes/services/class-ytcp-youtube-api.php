@@ -2,7 +2,7 @@
 /**
  * YouTube Data API v3 wrapper with caching, quota tracking, and stale-data fallback.
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -95,7 +95,7 @@ class YTCP_YouTube_API {
 	 */
 	private function request( $endpoint, $params = array() ) {
 		if ( ! $this->is_configured() ) {
-			return new WP_Error( 'no_api_key', __( 'YouTube API key not configured.', 'ytchannel-pro-netflix-style-youtube-platform' ) );
+			return new WP_Error( 'no_api_key', __( 'YouTube API key not configured.', 'craftsmenit-video-platform-for-youtube' ) );
 		}
 
 		$params['key']  = $this->api_key;

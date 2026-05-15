@@ -2,7 +2,7 @@
 /**
  * Recommendation engine — handles trending, personalized, and related video logic.
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

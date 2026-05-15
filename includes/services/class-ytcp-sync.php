@@ -2,7 +2,7 @@
 /**
  * Synchronises YouTube channel data into WordPress custom post types.
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -37,7 +37,7 @@ class YTCP_Sync {
 	public function add_cron_interval( $schedules ) {
 		$schedules['ytcp_twice_daily'] = array(
 			'interval' => 43200,
-			'display'  => __( 'Twice Daily (YTChannel Pro)', 'ytchannel-pro-netflix-style-youtube-platform' ),
+			'display'  => __( 'Twice Daily (YTChannel Pro)', 'craftsmenit-video-platform-for-youtube' ),
 		);
 		return $schedules;
 	}

@@ -2,7 +2,7 @@
 /**
  * Core plugin class — wires up all hooks and bootstraps subsystems.
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -147,7 +147,7 @@ class YTCP {
 			echo '<div class="notice notice-warning"><p><strong>YTChannel Pro:</strong> ' .
 				sprintf(
 					/* translators: 1: opening <a> tag, 2: closing </a> tag */
-					esc_html__( 'YouTube API key is not configured. %1$sGo to Settings%2$s to set it up.', 'ytchannel-pro-netflix-style-youtube-platform' ),
+					esc_html__( 'YouTube API key is not configured. %1$sGo to Settings%2$s to set it up.', 'craftsmenit-video-platform-for-youtube' ),
 					'<a href="' . esc_url( $settings_url ) . '">',
 					'</a>'
 				) .
@@ -160,7 +160,7 @@ class YTCP {
 			echo '<div class="notice notice-warning"><p><strong>YTChannel Pro:</strong> ' .
 				sprintf(
 					/* translators: 1: opening <a> tag, 2: closing </a> tag */
-					esc_html__( 'YouTube Channel ID is not configured. %1$sGo to Settings%2$s to set it up.', 'ytchannel-pro-netflix-style-youtube-platform' ),
+					esc_html__( 'YouTube Channel ID is not configured. %1$sGo to Settings%2$s to set it up.', 'craftsmenit-video-platform-for-youtube' ),
 					'<a href="' . esc_url( $settings_url ) . '">',
 					'</a>'
 				) .
@@ -175,7 +175,7 @@ class YTCP {
 			echo '<div class="notice notice-info"><p><strong>YTChannel Pro:</strong> ' .
 				sprintf(
 					/* translators: 1: opening <a> tag for Settings, 2: closing </a>, 3: opening <a> tag for Sync, 4: closing </a> */
-					esc_html__( 'API configured! %1$sSave Settings%2$s to auto-import your videos, or %3$sSync Now%4$s manually.', 'ytchannel-pro-netflix-style-youtube-platform' ),
+					esc_html__( 'API configured! %1$sSave Settings%2$s to auto-import your videos, or %3$sSync Now%4$s manually.', 'craftsmenit-video-platform-for-youtube' ),
 					'<a href="' . esc_url( $settings_url ) . '">',
 					'</a>',
 					'<a href="' . esc_url( $sync_url ) . '">',
@@ -192,16 +192,16 @@ class YTCP {
 		$quota_exceeded = get_option( 'ytcp_quota_exceeded', '' );
 		if ( ! empty( $quota_exceeded ) ) {
 			echo '<div class="notice notice-error"><p><strong>YTChannel Pro:</strong> ' .
-				esc_html__( 'YouTube API quota exceeded at ', 'ytchannel-pro-netflix-style-youtube-platform' ) .
+				esc_html__( 'YouTube API quota exceeded at ', 'craftsmenit-video-platform-for-youtube' ) .
 				esc_html( $quota_exceeded ) .
-				'. ' . esc_html__( 'Cached data is being served. Quota resets at midnight Pacific Time.', 'ytchannel-pro-netflix-style-youtube-platform' ) .
+				'. ' . esc_html__( 'Cached data is being served. Quota resets at midnight Pacific Time.', 'craftsmenit-video-platform-for-youtube' ) .
 				'</p></div>';
 		}
 
 		$sync_error = get_option( 'ytcp_last_sync_error', '' );
 		if ( ! empty( $sync_error ) && is_array( $sync_error ) ) {
 			echo '<div class="notice notice-warning"><p><strong>YTChannel Pro:</strong> ' .
-				esc_html__( 'Last sync encountered an error: ', 'ytchannel-pro-netflix-style-youtube-platform' ) .
+				esc_html__( 'Last sync encountered an error: ', 'craftsmenit-video-platform-for-youtube' ) .
 				esc_html( $sync_error['message'] ?? 'Unknown error' ) .
 				' (' . esc_html( $sync_error['time'] ?? '' ) . ')</p></div>';
 		}

@@ -2,7 +2,7 @@
 /**
  * Handles all WordPress AJAX endpoints for the plugin.
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

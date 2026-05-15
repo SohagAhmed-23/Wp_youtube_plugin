@@ -2,7 +2,7 @@
 /**
  * Registers the plugin's custom post types and taxonomies.
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -27,11 +27,11 @@ class YTCP_CPT {
 			'ytcp_video',
 			array(
 				'labels'              => array(
-					'name'          => __( 'Videos', 'ytchannel-pro-netflix-style-youtube-platform' ),
-					'singular_name' => __( 'Video', 'ytchannel-pro-netflix-style-youtube-platform' ),
-					'add_new_item'  => __( 'Add New Video', 'ytchannel-pro-netflix-style-youtube-platform' ),
-					'edit_item'     => __( 'Edit Video', 'ytchannel-pro-netflix-style-youtube-platform' ),
-					'search_items'  => __( 'Search Videos', 'ytchannel-pro-netflix-style-youtube-platform' ),
+					'name'          => __( 'Videos', 'craftsmenit-video-platform-for-youtube' ),
+					'singular_name' => __( 'Video', 'craftsmenit-video-platform-for-youtube' ),
+					'add_new_item'  => __( 'Add New Video', 'craftsmenit-video-platform-for-youtube' ),
+					'edit_item'     => __( 'Edit Video', 'craftsmenit-video-platform-for-youtube' ),
+					'search_items'  => __( 'Search Videos', 'craftsmenit-video-platform-for-youtube' ),
 				),
 				'public'              => true,
 				'has_archive'         => true,
@@ -51,10 +51,10 @@ class YTCP_CPT {
 			'ytcp_playlist',
 			array(
 				'labels'       => array(
-					'name'          => __( 'Playlists', 'ytchannel-pro-netflix-style-youtube-platform' ),
-					'singular_name' => __( 'Playlist', 'ytchannel-pro-netflix-style-youtube-platform' ),
-					'add_new_item'  => __( 'Add New Playlist', 'ytchannel-pro-netflix-style-youtube-platform' ),
-					'edit_item'     => __( 'Edit Playlist', 'ytchannel-pro-netflix-style-youtube-platform' ),
+					'name'          => __( 'Playlists', 'craftsmenit-video-platform-for-youtube' ),
+					'singular_name' => __( 'Playlist', 'craftsmenit-video-platform-for-youtube' ),
+					'add_new_item'  => __( 'Add New Playlist', 'craftsmenit-video-platform-for-youtube' ),
+					'edit_item'     => __( 'Edit Playlist', 'craftsmenit-video-platform-for-youtube' ),
 				),
 				'public'       => true,
 				'has_archive'  => true,
@@ -74,8 +74,8 @@ class YTCP_CPT {
 			array( 'ytcp_video', 'ytcp_playlist' ),
 			array(
 				'labels'       => array(
-					'name'          => __( 'Genres', 'ytchannel-pro-netflix-style-youtube-platform' ),
-					'singular_name' => __( 'Genre', 'ytchannel-pro-netflix-style-youtube-platform' ),
+					'name'          => __( 'Genres', 'craftsmenit-video-platform-for-youtube' ),
+					'singular_name' => __( 'Genre', 'craftsmenit-video-platform-for-youtube' ),
 				),
 				'public'       => true,
 				'hierarchical' => true,

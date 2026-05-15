@@ -2,7 +2,7 @@
 /**
  * Loader class — registers all actions and filters for the plugin.
  *
- * @package YTChannelProNetflixStyleYoutubePlatform
+ * @package CraftsmenitVideoPlatformForYouTube
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
