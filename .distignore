@@ -1,0 +1,10 @@
+.git
+.gitignore
+.distignore
+.agents
+.codex
+node_modules
+npm-debug.log
+yarn-error.log
+vendor/composer/tmp-*
+composer/cache

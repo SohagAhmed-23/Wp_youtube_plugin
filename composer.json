@@ -1,4 +1,8 @@
 {
+    "name": "craftsmenit/craftsmenit-video-platform-for-youtube",
+    "description": "WordPress plugin dependencies for Craftsmenit-Video Platform for YouTube.",
+    "license": "GPL-2.0-or-later",
+    "type": "wordpress-plugin",
     "require": {
         "guzzlehttp/guzzle": "^7.10",
         "guzzlehttp/psr7": "^2.8",
