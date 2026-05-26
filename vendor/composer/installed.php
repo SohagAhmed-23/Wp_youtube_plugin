@@ -5,9 +5,9 @@
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '4615991ef20a5f0c272e51d00d640fde9a31f112',
+        'reference' => 'c38eb850b6d9196e7265d744efa4c7790b33d4c2',
         'name' => 'craftsmenit/craftsmenit-video-platform-for-youtube',
-        'dev' => false,
+        'dev' => true,
     ),
     'versions' => array(
         'craftsmenit/craftsmenit-video-platform-for-youtube' => array(
@@ -16,16 +16,16 @@
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '4615991ef20a5f0c272e51d00d640fde9a31f112',
+            'reference' => 'c38eb850b6d9196e7265d744efa4c7790b33d4c2',
             'dev_requirement' => false,
         ),
         'guzzlehttp/guzzle' => array(
-            'pretty_version' => '7.10.3',
-            'version' => '7.10.3.0',
+            'pretty_version' => '7.10.4',
+            'version' => '7.10.4.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../guzzlehttp/guzzle',
             'aliases' => array(),
-            'reference' => '47ba23c7a55247e2e1b7407aca90e9bbed0d9d86',
+            'reference' => 'aec528da477062d3af11f51e6b33402be233b21f',
             'dev_requirement' => false,
         ),
         'guzzlehttp/promises' => array(
