@@ -157,10 +157,15 @@ class YTCP_Ajax {
 	 * @return void
 	 */
 	public function get_playlist_row() {
-		// Nonce not required for public read endpoints — playlist content is public.
-		$playlist_id = absint( $_GET['playlist_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		check_ajax_referer( 'ytcp_nonce', 'nonce' );
+
+		$playlist_id = absint( wp_unslash( $_GET['playlist_id'] ?? 0 ) );
 		if ( ! $playlist_id ) {
 			wp_send_json_error( 'Invalid playlist ID' );
+		}
+
+		if ( ! $this->is_public_playlist( $playlist_id ) ) {
+			wp_send_json_error( 'Playlist not found', 404 );
 		}
 
 		$video_ids = get_post_meta( $playlist_id, '_ytcp_video_ids', true );
@@ -200,12 +205,17 @@ class YTCP_Ajax {
 	 * @return void
 	 */
 	public function get_transcript() {
-		// Nonce not required — transcript data is publicly accessible read-only content.
-		$video_id = absint( $_GET['video_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$language = sanitize_text_field( wp_unslash( $_GET['lang'] ?? 'en' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		check_ajax_referer( 'ytcp_nonce', 'nonce' );
+
+		$video_id = absint( wp_unslash( $_GET['video_id'] ?? 0 ) );
+		$language = sanitize_text_field( wp_unslash( $_GET['lang'] ?? 'en' ) );
 
 		if ( ! $video_id ) {
 			wp_send_json_error( 'Invalid video ID' );
+		}
+
+		if ( ! $this->is_public_video( $video_id ) ) {
+			wp_send_json_error( 'Video not found', 404 );
 		}
 
 		$transcript = new YTCP_Transcript();
@@ -218,6 +228,38 @@ class YTCP_Ajax {
 				'transcript' => $data,
 				'languages'  => $languages,
 			)
+		);
+	}
+
+	/**
+	 * Checks whether a playlist ID belongs to a publicly visible plugin playlist.
+	 *
+	 * @param int $playlist_id Playlist post ID.
+	 * @return bool
+	 */
+	private function is_public_playlist( $playlist_id ) {
+		$playlist = get_post( $playlist_id );
+
+		return (
+			$playlist
+			&& 'ytcp_playlist' === $playlist->post_type
+			&& 'publish' === $playlist->post_status
+		);
+	}
+
+	/**
+	 * Checks whether a video ID belongs to a publicly visible plugin video.
+	 *
+	 * @param int $video_id Video post ID.
+	 * @return bool
+	 */
+	private function is_public_video( $video_id ) {
+		$video = get_post( $video_id );
+
+		return (
+			$video
+			&& 'ytcp_video' === $video->post_type
+			&& 'publish' === $video->post_status
 		);
 	}
 }

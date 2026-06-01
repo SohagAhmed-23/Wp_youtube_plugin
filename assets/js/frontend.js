@@ -643,6 +643,7 @@
                 url: ytcpData.ajaxUrl,
                 data: {
                     action: 'ytcp_get_transcript',
+                    nonce: ytcpData.nonce,
                     video_id: videoId,
                     lang: lang,
                 },
@@ -744,6 +745,7 @@
                 url: ytcpData.ajaxUrl,
                 data: {
                     action: 'ytcp_get_transcript',
+                    nonce: ytcpData.nonce,
                     video_id: container.dataset.videoId,
                     lang: 'en',
                 },
@@ -842,7 +844,11 @@
 
             $.ajax({
                 url: ytcpData.ajaxUrl,
-                data: { action: 'ytcp_get_playlist_row', playlist_id: playlistId },
+                data: {
+                    action: 'ytcp_get_playlist_row',
+                    nonce: ytcpData.nonce,
+                    playlist_id: playlistId
+                },
                 success: function(resp) {
                     if (resp.success && resp.data.html) {
                         var temp = document.createElement('div');
